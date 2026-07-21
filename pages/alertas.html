@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas | Parkeate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container"><a class="navbar-brand" href="../index.html"> Parkeate </a><button class="navbar-toggler"
+                type="button" data-bs-toggle="collapse" data-bs-target="#menu"><span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link" href="../index.html"> Inicio </a></li>
+                    <li class="nav-item"><a class="nav-link" href="buscar.html"> Buscar </a></li>
+                    <li class="nav-item"><a class="nav-link" href="reservas.html"> Reservas </a></li>
+                    <li class="nav-item"><a class="nav-link" href="favoritos.html"> Favoritos </a></li>
+                    <li class="nav-item"><a class="nav-link" href="historial.html"> Historial </a></li>
+                    <li class="nav-item"><a class="nav-link active" href="alertas.html"> Alertas </a></li>
+                    <li class="nav-item ms-lg-3"><a href="perfil.html" class="btn btn-parkeate"><i
+                                class="bi bi-person-circle"></i> Mi Perfil </a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section class="hero-buscar">
+        <div class="container text-center"><span class="badge bg-danger mb-3"> Alertas </span>
+            <h1> Centro de Notificaciones </h1>
+            <p class="lead"> Mantente informado sobre tus reservas, disponibilidad de espacios y promociones. </p>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>Configurar alertas</h3>
+                <form id="formConfigAlertas" class="row g-3">
+                    <div class="col-md-5"><label for="alertaZona" class="form-label">Zona</label><input id="alertaZona"
+                            class="form-control" placeholder="Ejemplo: Escazú"></div>
+                    <div class="col-md-5"><label for="alertaParqueo" class="form-label">Parqueo
+                            específico</label><select id="alertaParqueo" class="form-select">
+                            <option value="">Cualquier parqueo</option>
+                        </select></div>
+                    <div class="col-md-2 d-grid"><button type="submit" class="btn btn-parkeate mt-md-4">Guardar</button>
+                    </div>
+                </form>
+                <div id="mensajeConfigAlertas" class="alert alert-success d-none mt-3"> Configuración de alertas
+                    guardada. </div>
+            </div>
+        </div>
+        <div id="contenedor-alertas" class="row g-4">
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3"><i
+                                class="bi bi-check-circle-fill text-success fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-1"> Reserva Confirmada </h4><small class="text-muted"> Hace 5 minutos
+                                </small>
+                            </div>
+                        </div>
+                        <p> Tu reserva para el parqueo <strong>A-01</strong> fue confirmada exitosamente. </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3"><i
+                                class="bi bi-car-front-fill text-primary fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-1"> Espacio Disponible </h4><small class="text-muted"> Hace 20 minutos
+                                </small>
+                            </div>
+                        </div>
+                        <p> Se liberó un espacio cerca de tu ubicación actual. </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3"><i
+                                class="bi bi-bell-fill text-warning fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-1"> Recordatorio </h4><small class="text-muted"> Hoy </small>
+                            </div>
+                        </div>
+                        <p> Tu reserva inicia en 30 minutos. </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3"><i class="bi bi-percent text-danger fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-1"> Promoción </h4><small class="text-muted"> Disponible </small>
+                            </div>
+                        </div>
+                        <p> Obtén un <strong>20% de descuento</strong> en tu próxima reserva utilizando Parkeate. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <h3 class="mb-3"> Parkeate </h3>
+                    <p> La plataforma inteligente para encontrar, comparar y reservar parqueos de forma rápida y segura.
+                    </p>
+                </div>
+                <div class="col-lg-2">
+                    <h5> Navegación </h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html"> Inicio </a></li>
+                        <li><a href="buscar.html"> Buscar </a></li>
+                        <li><a href="reservas.html"> Reservas </a></li>
+                        <li><a href="favoritos.html"> Favoritos </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5> Contacto </h5>
+                    <p><i class="bi bi-envelope-fill"></i> soporte@parkeate.com </p>
+                    <p><i class="bi bi-telephone-fill"></i> +506 2222-2222 </p>
+                    <p><i class="bi bi-geo-alt-fill"></i> San José, Costa Rica </p>
+                </div>
+                <div class="col-lg-3">
+                    <h5> Síguenos </h5>
+                    <div class="d-flex gap-3 mt-3"><i class="bi bi-facebook fs-4"></i><i
+                            class="bi bi-instagram fs-4"></i><i class="bi bi-twitter-x fs-4"></i><i
+                            class="bi bi-linkedin fs-4"></i></div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center"> © 2026 Parkeate | Proyecto SC-502 | Todos los derechos reservados. </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>

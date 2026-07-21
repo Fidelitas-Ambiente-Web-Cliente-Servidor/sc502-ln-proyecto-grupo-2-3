@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkeate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container"><a class="navbar-brand" href="index.html"> Parkeate </a><button class="navbar-toggler"
+                type="button" data-bs-toggle="collapse" data-bs-target="#menu"><span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link active" href="#"> Inicio </a></li>
+                    <li class="nav-item"><a class="nav-link" href="pages/buscar.html"> Buscar </a></li>
+                    <li class="nav-item"><a class="nav-link" href="pages/reservas.html"> Reservas </a></li>
+                    <li class="nav-item"><a class="nav-link" href="pages/favoritos.html"> Favoritos </a></li>
+                    <li class="nav-item ms-lg-3"><a href="pages/login.html" class="btn btn-parkeate"><i
+                                class="bi bi-person-circle"></i> Iniciar Sesión </a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-contenido"><span class="badge bg-light text-dark mb-3"> 🚗 Plataforma #1 en
+                            Parqueos </span>
+                        <h1> Encuentra tu parqueo ideal en segundos </h1>
+                        <p> Localiza parqueos disponibles, compara precios, consulta opiniones y reserva tu espacio de
+                            manera rápida y segura. </p>
+                        <div class="d-flex gap-3 flex-wrap"><a href="pages/buscar.html" class="btn btn-parkeate"><i
+                                    class="bi bi-search"></i> Buscar Parqueos </a><a href="#como-funciona"
+                                class="btn btn-outline-light"> ¿Cómo funciona? </a></div>
+                        <div class="row mt-5">
+                            <div class="col-4">
+                                <h3 class="text-white"> +2500 </h3><small> Parqueos </small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-white"> +15000 </h3><small> Usuarios </small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-white"> 4.9★ </h3><small> Calificación </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center"><img
+                        src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80"
+                        class="img-fluid rounded-4 shadow-lg" alt="Parqueo moderno"></div>
+            </div>
+        </div>
+    </section>
+    <section class="container">
+        <div class="buscador">
+            <div class="row align-items-center g-3">
+                <div class="col-lg-4"><label class="form-label fw-semibold"><i
+                            class="bi bi-geo-alt-fill text-danger"></i> Ubicación </label><input id="ubicacion"
+                        type="text" class="form-control" placeholder="San José, Heredia, Alajuela..."></div>
+                <div class="col-lg-3"><label class="form-label fw-semibold"><i class="bi bi-calendar-event"></i> Fecha
+                    </label><input id="fecha" type="date" class="form-control"></div>
+                <div class="col-lg-3"><label class="form-label fw-semibold"><i class="bi bi-car-front-fill"></i>
+                        Vehículo </label><select id="vehiculo" class="form-select">
+                        <option value="">Seleccione un vehículo</option>
+                        <option>Sedán</option>
+                        <option>SUV</option>
+                        <option>Motocicleta</option>
+                        <option>Pick Up</option>
+                    </select></div>
+                <div class="col-lg-2 d-grid"><button id="btnHeroBuscar" class="btn btn-parkeate mt-lg-4"><i
+                            class="bi bi-search"></i> Buscar </button></div>
+            </div>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="text-center mb-5">
+            <h2 class="titulo-seccion"> ¿Por qué elegir Parkeate? </h2>
+            <p class="text-muted"> La forma más rápida y segura de encontrar un parqueo. </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beneficio"><i class="bi bi-shield-check"></i>
+                    <h4> Seguridad </h4>
+                    <p> Parqueos verificados para brindarte confianza. </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beneficio"><i class="bi bi-clock-history"></i>
+                    <h4> Ahorro de Tiempo </h4>
+                    <p> Encuentra un espacio libre en pocos segundos. </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beneficio"><i class="bi bi-cash-coin"></i>
+                    <h4> Mejores Precios </h4>
+                    <p> Compara tarifas antes de reservar. </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beneficio"><i class="bi bi-phone"></i>
+                    <h4> Reserva Fácil </h4>
+                    <p> Todo desde tu computadora o celular. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="titulo-seccion mb-0"> Parqueos Destacados </h2>
+                <p class="text-muted"> Los más recomendados por nuestros usuarios. </p>
+            </div><a href="pages/buscar.html" class="btn btn-outline-parkeate"> Ver todos </a>
+        </div>
+        <div id="contenedor-parqueos" class="row g-4"></div>
+    </section>
+    <section id="como-funciona" class="container seccion">
+        <div class="text-center mb-5">
+            <h2 class="titulo-seccion"> Reserva en solo 3 pasos </h2>
+            <p class="text-muted"> Un proceso rápido y sencillo para que nunca vuelvas a perder tiempo buscando dónde
+                estacionar. </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="paso">
+                    <div class="numero-paso"> 1 </div><i class="bi bi-search fs-1 text-danger mb-3"></i>
+                    <h4> Busca </h4>
+                    <p> Ingresa tu ubicación y encuentra los parqueos disponibles cerca de tu destino. </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="paso">
+                    <div class="numero-paso"> 2 </div><i class="bi bi-calendar-check fs-1 text-success mb-3"></i>
+                    <h4> Reserva </h4>
+                    <p> Selecciona el horario que necesitas y confirma tu espacio de forma inmediata. </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="paso">
+                    <div class="numero-paso"> 3 </div><i class="bi bi-car-front-fill fs-1 text-primary mb-3"></i>
+                    <h4> Estaciona </h4>
+                    <p> Llega al parqueo y disfruta de una experiencia rápida, segura y sin complicaciones. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="text-center mb-5">
+            <h2 class="titulo-seccion"> Lo que opinan nuestros usuarios </h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card-beneficio"><img src="https://randomuser.me/api/portraits/women/45.jpg"
+                        class="rounded-circle mb-3" width="90">
+                    <h5> María González </h5>
+                    <p class="text-warning"> ★★★★★ </p>
+                    <p> "Encontré un parqueo en menos de dos minutos. Muy fácil de utilizar." </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-beneficio"><img src="https://randomuser.me/api/portraits/men/22.jpg"
+                        class="rounded-circle mb-3" width="90">
+                    <h5> Daniel Vargas </h5>
+                    <p class="text-warning"> ★★★★★ </p>
+                    <p> "Excelente plataforma. Me ayudó a ahorrar muchísimo tiempo." </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-beneficio"><img src="https://randomuser.me/api/portraits/women/12.jpg"
+                        class="rounded-circle mb-3" width="90">
+                    <h5> Sofía Jiménez </h5>
+                    <p class="text-warning"> ★★★★★ </p>
+                    <p> "La interfaz es moderna y la reserva fue muy sencilla." </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="card-beneficio"><i class="bi bi-p-square-fill"></i>
+                    <h2 class="precio contador" data-valor="2500"> 0 </h2>
+                    <p> Parqueos </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-beneficio"><i class="bi bi-people-fill"></i>
+                    <h2 class="precio contador" data-valor="15000"> 0 </h2>
+                    <p> Usuarios </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-beneficio"><i class="bi bi-star-fill"></i>
+                    <h2 class="precio contador" data-valor="5"> 0 </h2>
+                    <p> Calificación </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-beneficio"><i class="bi bi-building"></i>
+                    <h2 class="precio contador" data-valor="50"> 0 </h2>
+                    <p> Ciudades </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container seccion">
+        <div class="card-beneficio text-center p-5">
+            <h2 class="titulo-seccion"> ¿Listo para encontrar tu próximo parqueo? </h2>
+            <p class="mb-4"> Miles de usuarios ya utilizan Parkeate para ahorrar tiempo todos los días. </p><a
+                href="pages/buscar.html" class="btn btn-parkeate"> Comenzar Ahora </a>
+        </div>
+    </section>
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <h3 class="fw-bold mb-3"><i class="bi bi-p-square-fill text-danger"></i> Parkeate </h3>
+                    <p class="text-muted"> La plataforma inteligente para encontrar, comparar y reservar parqueos de
+                        forma rápida, segura y al mejor precio. </p>
+                </div>
+                <div class="col-lg-2">
+                    <h5 class="mb-3"> Navegación </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="pages/reservas.html"> Reservas </a></li>
+                        <li class="mb-2"><a href="pages/favoritos.html"> Favoritos </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3"> Contacto </h5>
+                    <p><i class="bi bi-envelope-fill me-2"></i> soporte@parkeate.com </p>
+                    <p><i class="bi bi-telephone-fill me-2"></i> +506 2222-2222 </p>
+                    <p><i class="bi bi-geo-alt-fill me-2"></i> San José, Costa Rica </p>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-3"> Síguenos </h5>
+                    <div class="d-flex gap-3 fs-4"><a href="#"><i class="bi bi-facebook"></i></a><a href="#"><i
+                                class="bi bi-instagram"></i></a><a href="#"><i class="bi bi-twitter-x"></i></a><a
+                            href="#"><i class="bi bi-linkedin"></i></a></div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center text-muted"> © 2026 Parkeate | Proyecto SC-502 | Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

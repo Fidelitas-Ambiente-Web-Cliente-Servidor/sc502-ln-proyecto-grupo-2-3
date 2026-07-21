@@ -1,0 +1,36 @@
+services:
+  web:
+    build: ./docker/php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: parkeate
+      DB_USER: parkeate
+      DB_PASSWORD: parkeate_dev
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: parkeate
+      MYSQL_USER: parkeate
+      MYSQL_PASSWORD: parkeate_dev
+      MYSQL_ROOT_PASSWORD: root_dev_only
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot_dev_only"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mysql_data:
