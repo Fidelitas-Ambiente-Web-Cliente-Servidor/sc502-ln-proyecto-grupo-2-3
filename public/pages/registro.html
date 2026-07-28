@@ -52,23 +52,23 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3"><label for="nombre" class="form-label fw-semibold">
                                             Nombre Completo </label><input type="text" class="form-control" id="nombre"
-                                            placeholder="Juan Pérez" required></div>
+                                            placeholder="Juan Pérez" autocomplete="name" maxlength="100" required></div>
                                     <div class="col-md-6 mb-3"><label for="telefono" class="form-label fw-semibold">
                                             Teléfono </label><input type="text" class="form-control" id="telefono"
-                                            placeholder="8888-8888" required></div>
+                                            placeholder="8888-8888" autocomplete="tel" inputmode="numeric" pattern="[0-9]{4}-?[0-9]{4}" required></div>
                                 </div>
                                 <div class="mb-3"><label for="correoRegistro" class="form-label fw-semibold"> Correo
                                         Electrónico </label><input type="email" class="form-control" id="correoRegistro"
-                                        placeholder="correo@ejemplo.com" required></div>
+                                        placeholder="correo@ejemplo.com" autocomplete="email" required></div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3"><label for="passwordRegistro"
                                             class="form-label fw-semibold"> Contraseña </label><input type="password"
-                                            class="form-control" id="passwordRegistro" placeholder="********" required>
+                                            class="form-control" id="passwordRegistro" placeholder="********" autocomplete="new-password" minlength="8" required>
                                     </div>
                                     <div class="col-md-6 mb-4"><label for="confirmarPassword"
                                             class="form-label fw-semibold"> Confirmar Contraseña </label><input
                                             type="password" class="form-control" id="confirmarPassword"
-                                            placeholder="********" required></div>
+                                            placeholder="********" autocomplete="new-password" minlength="8" required></div>
                                 </div>
                                 <div class="form-check mb-4"><input class="form-check-input" type="checkbox"
                                         id="terminos" required><label class="form-check-label" for="terminos"> Acepto
@@ -122,7 +122,23 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="../js/core/constants.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/parqueos/favoritos.js"></script>
+    <script src="../js/reservas/reservas.js"></script>
+    <script src="../js/reservas/historial.js"></script>
+    <script src="../js/alertas/alertas.js"></script>
+    <script src="../js/admin/admin.js"></script>
+    <script src="../js/admin/adminParqueo.js"></script>
+    <script src="../js/home/ayuda.js"></script>
+    <script src="../js/parqueos/detalle.js"></script>
+    <script src="../js/home/index.js"></script>
+    <script src="../js/auth/login.js"></script>
+    <script src="../js/auth/registro.js"></script>
+    <script src="../js/auth/recuperar.js"></script>
+    <script src="../js/auth/perfil.js"></script>
+    <script src="../js/core/app.js"></script>
 </body>
 
 </html>

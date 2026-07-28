@@ -6,6 +6,13 @@
     --color-texto: #484848;
     --color-blanco: #FFFFFF;
     --color-borde: #E5E5E5;
+    --color-texto-suave: #777;
+    --color-texto-claro: #d8d8d8;
+    --color-fondo-tarjeta: #fff;
+    --color-primario-hover: #e5484d;
+    --color-secundario-hover: #00897d;
+    --color-peligro: #dc3545;
+    --color-estrella: #ffc107;
     --fuente-titulo: 'Poppins', sans-serif;
     --fuente-texto: 'Inter', sans-serif;
     --sombra: 0 8px 25px rgba(0, 0, 0, .08);
@@ -70,7 +77,7 @@ p {
 
 .subtitulo-seccion {
     text-align: center;
-    color: #777;
+    color: var(--color-texto-suave);
     max-width: 700px;
     margin: auto;
     margin-bottom: 60px
@@ -189,7 +196,7 @@ p {
 }
 
 .btn-parkeate:hover {
-    background: #e5484d;
+    background: var(--color-primario-hover);
     color: white;
     transform: translateY(-3px)
 }
@@ -204,7 +211,7 @@ p {
 }
 
 .btn-secundario:hover {
-    background: #00897d;
+    background: var(--color-secundario-hover);
     color: white;
     transform: translateY(-3px)
 }
@@ -308,7 +315,7 @@ p {
     overflow: hidden;
     transition: .35s;
     box-shadow: var(--sombra);
-    background: #fff
+    background: var(--color-fondo-tarjeta)
 }
 
 .tarjeta-parqueo:hover {
@@ -340,7 +347,7 @@ p {
 }
 
 .tarjeta-parqueo .card-footer {
-    background: #fff;
+    background: var(--color-fondo-tarjeta);
     border: none;
     padding: 20px
 }
@@ -355,7 +362,7 @@ p {
 }
 
 .bi-heart-fill {
-    color: #FF5A5F !important
+    color: var(--color-primario) !important
 }
 
 .precio {
@@ -375,15 +382,15 @@ p {
 }
 
 .badge.bg-danger {
-    background: #dc3545 !important
+    background: var(--color-peligro) !important
 }
 
 .bi-star-fill {
-    color: #ffc107
+    color: var(--color-estrella)
 }
 
 .bi-star {
-    color: #ffc107
+    color: var(--color-estrella)
 }
 
 .paso {
@@ -451,7 +458,8 @@ p {
 .card {
     border: none;
     border-radius: 20px;
-    box-shadow: var(--sombra)
+    box-shadow: var(--sombra);
+    transition: var(--transicion)
 }
 
 .card-header {
@@ -573,10 +581,6 @@ p {
     color: #666
 }
 
-.card {
-    transition: var(--transicion)
-}
-
 .card:hover {
     transform: translateY(-3px)
 }
@@ -597,7 +601,7 @@ footer h5 {
 }
 
 footer p {
-    color: #d8d8d8
+    color: var(--color-texto-claro)
 }
 
 footer ul {
@@ -609,7 +613,7 @@ footer li {
 }
 
 footer a {
-    color: #d8d8d8;
+    color: var(--color-texto-claro);
     transition: var(--transicion)
 }
 

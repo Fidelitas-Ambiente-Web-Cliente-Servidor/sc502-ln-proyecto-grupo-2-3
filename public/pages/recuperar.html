@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión | Parkeate</title>
+    <title>Recuperar Contraseña | Parkeate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,13 +19,11 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container"><a class="navbar-brand fw-bold" href="../index.html"><i
                     class="bi bi-p-square-fill text-danger"></i> Parkeate </a><button class="navbar-toggler"
-                type="button" data-bs-toggle="collapse" data-bs-target="#menu"><span
-                    class="navbar-toggler-icon"></span></button>
+                data-bs-toggle="collapse" data-bs-target="#menu"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="../index.html"> Inicio </a></li>
                     <li class="nav-item"><a class="nav-link" href="buscar.html"> Buscar </a></li>
-                    <li class="nav-item"><a class="nav-link" href="favoritos.html"> Favoritos </a></li>
                     <li class="nav-item ms-lg-3"><a class="btn btn-parkeate rounded-pill px-4" href="login.html">
                             Iniciar Sesión </a></li>
                 </ul>
@@ -33,47 +31,36 @@
         </div>
     </nav>
     <section class="hero-buscar py-5">
-        <div class="container text-center"><span class="badge bg-danger mb-3"> Bienvenido nuevamente </span>
-            <h1 class="display-5 fw-bold"> Inicia sesión en Parkeate </h1>
-            <p class="lead text-muted"> Administra tus reservas, guarda tus parqueos favoritos y encuentra espacios
-                disponibles en segundos. </p>
+        <div class="container text-center"><span class="badge bg-danger mb-3"> Recuperación </span>
+            <h1 class="display-5 fw-bold"> ¿Olvidaste tu contraseña? </h1>
+            <p class="lead text-muted"> Ingresa tu correo electrónico y te enviaremos las instrucciones para recuperar
+                el acceso a tu cuenta. </p>
         </div>
     </section>
     <section class="py-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-5 col-md-8">
+                <div class="col-lg-5">
                     <div class="card border-0 shadow-lg rounded-4">
                         <div class="card-body p-5">
-                            <div class="text-center mb-4"><i class="bi bi-person-circle display-3 text-danger"></i>
-                                <h2 class="fw-bold mt-3"> Iniciar Sesión </h2>
-                                <p class="text-muted"> Ingresa tus credenciales para continuar. </p>
+                            <div class="text-center mb-4"><i class="bi bi-envelope-lock-fill display-3 text-danger"></i>
+                                <h2 class="fw-bold mt-3"> Recuperar Contraseña </h2>
+                                <p class="text-muted"> Escribe tu correo electrónico para enviarte las instrucciones de
+                                    recuperación. </p>
                             </div>
-                            <form id="loginForm">
-                                <div class="mb-3"><label for="correo" class="form-label fw-semibold"><i
-                                            class="bi bi-envelope-fill text-danger"></i> Correo electrónico
-                                    </label><input type="email" class="form-control" id="correo"
-                                        placeholder="ejemplo@correo.com" required></div>
-                                <div class="mb-3"><label for="password" class="form-label fw-semibold"><i
-                                            class="bi bi-lock-fill text-danger"></i> Contraseña </label><input
-                                        type="password" class="form-control" id="password" placeholder="********"
-                                        required></div>
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox"
-                                            id="recordarme"><label class="form-check-label" for="recordarme"> Recordarme
-                                        </label></div><a href="recuperar.html" class="text-decoration-none"> ¿Olvidaste
-                                        tu contraseña? </a>
-                                </div>
-                                <div class="d-grid mb-3"><button type="submit" class="btn btn-parkeate btn-lg"><i
-                                            class="bi bi-box-arrow-in-right"></i> Iniciar Sesión </button></div>
+                            <form id="recuperarForm">
+                                <div class="mb-4"><label for="correoRecuperacion" class="form-label fw-semibold"> Correo
+                                        Electrónico </label><input type="email" class="form-control"
+                                        id="correoRecuperacion" placeholder="correo@ejemplo.com" required></div>
+                                <div class="d-grid"><button type="submit" class="btn btn-parkeate btn-lg"><i
+                                            class="bi bi-send-fill"></i> Enviar Instrucciones </button></div>
                             </form>
-                            <hr>
-                            <div class="text-center">
-                                <p class="mb-2"> ¿Aún no tienes cuenta? </p><a href="registro.html"
-                                    class="btn btn-outline-danger rounded-pill px-4"> Crear una cuenta </a>
-                            </div>
-                            <div class="text-center mt-4"><a href="../index.html" class="text-decoration-none"><i
-                                        class="bi bi-arrow-left"></i> Volver al inicio </a></div>
+                            <div id="mensajeRecuperacion" class="alert alert-success mt-4 d-none"> ✅ Hemos enviado un
+                                correo con las instrucciones para recuperar tu contraseña. </div>
+                            <hr class="my-4">
+                            <div class="text-center"><a href="login.html"
+                                    class="btn btn-outline-danger rounded-pill px-4"><i class="bi bi-arrow-left"></i>
+                                    Volver al Login </a></div>
                         </div>
                     </div>
                 </div>
@@ -115,7 +102,23 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="../js/core/constants.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/parqueos/favoritos.js"></script>
+    <script src="../js/reservas/reservas.js"></script>
+    <script src="../js/reservas/historial.js"></script>
+    <script src="../js/alertas/alertas.js"></script>
+    <script src="../js/admin/admin.js"></script>
+    <script src="../js/admin/adminParqueo.js"></script>
+    <script src="../js/home/ayuda.js"></script>
+    <script src="../js/parqueos/detalle.js"></script>
+    <script src="../js/home/index.js"></script>
+    <script src="../js/auth/login.js"></script>
+    <script src="../js/auth/registro.js"></script>
+    <script src="../js/auth/recuperar.js"></script>
+    <script src="../js/auth/perfil.js"></script>
+    <script src="../js/core/app.js"></script>
 </body>
 
 </html>

@@ -52,13 +52,13 @@
                                     placeholder="Ingrese su nombre" required></div>
                             <div class="mb-3"><label for="placaReserva" class="form-label"> Placa del Vehículo
                                 </label><input type="text" id="placaReserva" class="form-control" placeholder="ABC-123"
-                                    required></div>
+                                    maxlength="10" autocomplete="off" required></div>
                             <div class="mb-3"><label for="parqueoReserva" class="form-label"> Parqueo </label><select
                                     id="parqueoReserva" class="form-select" required>
                                     <option value="">Seleccione un parqueo</option>
                                 </select></div>
                             <div class="mb-3"><label for="espacioReserva" class="form-label"> Espacio </label><select
-                                    id="espacioReserva" class="form-select">
+                                    id="espacioReserva" class="form-select" required>
                                     <option value="">Seleccione un espacio</option>
                                     <option>A-01</option>
                                     <option>A-02</option>
@@ -145,7 +145,23 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="../js/core/constants.js"></script>
+    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/parqueos/favoritos.js"></script>
+    <script src="../js/reservas/reservas.js"></script>
+    <script src="../js/reservas/historial.js"></script>
+    <script src="../js/alertas/alertas.js"></script>
+    <script src="../js/admin/admin.js"></script>
+    <script src="../js/admin/adminParqueo.js"></script>
+    <script src="../js/home/ayuda.js"></script>
+    <script src="../js/parqueos/detalle.js"></script>
+    <script src="../js/home/index.js"></script>
+    <script src="../js/auth/login.js"></script>
+    <script src="../js/auth/registro.js"></script>
+    <script src="../js/auth/recuperar.js"></script>
+    <script src="../js/auth/perfil.js"></script>
+    <script src="../js/core/app.js"></script>
 </body>
 
 </html>
