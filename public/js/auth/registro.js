@@ -1,7 +1,7 @@
 function inicializarRegistro(){
     const registroForm = document.getElementById("registroForm");
     if(!registroForm) return;
-    registroForm.addEventListener("submit",(e)=>{
+    registroForm.addEventListener("submit",async (e)=>{
         e.preventDefault();
         const nombre = document.getElementById("nombre").value.trim();
         const correo = document.getElementById("correoRegistro").value.trim();
@@ -20,6 +20,26 @@ function inicializarRegistro(){
             alert("Las contraseñas no coinciden.");
             return;
         }
+
+        try{
+            if(typeof window.backendRequest === "function"){
+                await window.backendRequest("auth.register", {
+                    method:"POST",
+                    body: JSON.stringify({nombre, correo, telefono, password})
+                });
+                alert("Usuario registrado correctamente.");
+                window.location.href = "login.html";
+                return;
+            }
+        }catch(error){
+            const mensaje = (error && error.message) ? error.message : "";
+            const fallbackLocal = mensaje.toLowerCase().includes("failed") || mensaje.toLowerCase().includes("network") || mensaje.toLowerCase().includes("fetch");
+            if(mensaje && !fallbackLocal){
+                alert(mensaje);
+                return;
+            }
+        }
+
         const usuarios = obtenerUsuarios();
         const existe = usuarios.some(usuario=>{
             return usuario.correo.toLowerCase()===correo.toLowerCase();

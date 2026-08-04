@@ -23,6 +23,9 @@ function activarFavoritos(){
             favorito.classList.toggle("text-danger");
             const activo = favorito.classList.contains("bi-heart-fill");
             localStorage.setItem("favorito-"+id,activo);
+            if(typeof window.syncFavorite === "function"){
+                window.syncFavorite(id, activo);
+            }
             if(document.getElementById("contenedor-favoritos")){
                 inicializarFavoritos();
             }

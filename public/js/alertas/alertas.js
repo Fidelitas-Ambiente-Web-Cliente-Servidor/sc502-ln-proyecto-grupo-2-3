@@ -1,121 +1,113 @@
-function inicializarAlertas(){
-    const contenedor = document.getElementById("contenedor-alertas");
+function tarjetaAlerta(alerta){
+    return `
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi ${alerta.icono || 'bi-bell-fill text-warning'} fs-1 me-3"></i>
+                        <div>
+                            <h4 class="mb-1">${alerta.titulo || 'Notificación'}</h4>
+                            <small class="text-muted">${alerta.tiempo || 'Reciente'}</small>
+                        </div>
+                    </div>
+                    <p>${alerta.mensaje || ''}</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+async function cargarConfigAlertas(){
+    if(typeof window.backendRequest !== 'function') return null;
+    try{
+        const respuesta = await window.backendRequest('alertas.config');
+        return respuesta?.config || null;
+    }catch(error){
+        return null;
+    }
+}
+
+async function guardarConfigAlertas(config){
+    if(typeof window.backendRequest !== 'function') return false;
+    try{
+        await window.backendRequest('alertas.config', {
+            method: 'POST',
+            body: JSON.stringify(config)
+        });
+        return true;
+    }catch(error){
+        return false;
+    }
+}
+
+async function cargarAlertasBackend(){
+    if(typeof window.backendRequest !== 'function') return [];
+    try{
+        const respuesta = await window.backendRequest('alertas.list');
+        return Array.isArray(respuesta?.data) ? respuesta.data : [];
+    }catch(error){
+        return [];
+    }
+}
+
+async function inicializarAlertas(){
+    const contenedor = document.getElementById('contenedor-alertas');
     if(!contenedor) return;
-    const formConfig = document.getElementById("formConfigAlertas");
-    const selectParqueo = document.getElementById("alertaParqueo");
-    const inputZona = document.getElementById("alertaZona");
-    const mensajeConfig = document.getElementById("mensajeConfigAlertas");
-    const configActual = leerDatos(DB_KEYS.configAlertas,{zona:"", parqueo:""});
-    if(selectParqueo && selectParqueo.options.length===1){
-        obtenerParqueos().forEach(parqueo=>{
-            const option = document.createElement("option");
+
+    const formConfig = document.getElementById('formConfigAlertas');
+    const selectParqueo = document.getElementById('alertaParqueo');
+    const inputZona = document.getElementById('alertaZona');
+    const mensajeConfig = document.getElementById('mensajeConfigAlertas');
+
+    if(selectParqueo && selectParqueo.options.length === 1){
+        obtenerParqueos().forEach((parqueo)=>{
+            const option = document.createElement('option');
             option.value = parqueo.nombre;
             option.textContent = parqueo.nombre;
             selectParqueo.appendChild(option);
         });
-        selectParqueo.value = configActual.parqueo || "";
     }
-    if(inputZona){
-        inputZona.value = configActual.zona || "";
-    }
-    if(formConfig && !formConfig.dataset.inicializado){
-        formConfig.dataset.inicializado = "true";
-        formConfig.addEventListener("submit",(e)=>{
-            e.preventDefault();
-            guardarDatos(DB_KEYS.configAlertas,{
-                zona:inputZona.value.trim(),
-                parqueo:selectParqueo.value
-            });
-            if(mensajeConfig){
-                mensajeConfig.classList.remove("d-none");
-            }
-            inicializarAlertas();
-        });
-    }
-    const alertasLeidas = JSON.parse(localStorage.getItem("alertas-leidas-parkeate")) || [];
-    const reservas = obtenerReservas();
-    const favoritosGuardados = obtenerParqueos().filter(parqueo=>{
-        return localStorage.getItem("favorito-"+parqueo.id)==="true";
-    });
-    const alertas = [];
-    reservas.slice(-3).reverse().forEach((reserva,index)=>{
-        alertas.push({
-            id:`reserva-${reserva.fecha}-${reserva.hora}-${reserva.espacio}-${index}`,
-            icono:"bi-check-circle-fill text-success",
-            titulo:"Reserva Confirmada",
-            tiempo:"Reciente",
-            mensaje:`Tu reserva en ${reserva.parqueo || "Parqueo no asignado"}, espacio ${reserva.espacio}, fue confirmada para el ${reserva.fecha} a las ${reserva.hora}.`
-        });
-        alertas.push({
-            id:`recordatorio-${reserva.fecha}-${reserva.hora}-${reserva.espacio}-${index}`,
-            icono:"bi-bell-fill text-warning",
-            titulo:"Recordatorio",
-            tiempo:"Pendiente",
-            mensaje:`Recuerda tu reserva en ${reserva.parqueo || "Parqueo no asignado"} para el ${reserva.fecha} a las ${reserva.hora}.`
-        });
-    });
-    const parqueosConAlerta = obtenerParqueos().filter(parqueo=>{
-        const coincideParqueo = !configActual.parqueo || parqueo.nombre===configActual.parqueo;
-        const coincideZona = !configActual.zona || parqueo.zona.toLowerCase().includes(configActual.zona.toLowerCase());
-        return coincideParqueo && coincideZona && parqueo.disponible;
-    });
-    parqueosConAlerta.slice(0,2).forEach(parqueo=>{
-        alertas.push({
-            id:`favorito-${parqueo.id}`,
-            icono:"bi-car-front-fill text-primary",
-            titulo:"Favorito Disponible",
-            tiempo:"Disponible",
-            mensaje:`${parqueo.nombre} tiene ${parqueo.espacios} espacios disponibles.`
-        });
-    });
-    favoritosGuardados.slice(0,2).forEach(parqueo=>{
-        alertas.push({
-            id:`favorito-${parqueo.id}`,
-            icono:"bi-heart-fill text-danger",
-            titulo:"Favorito guar…1612 tokens truncated…in();
-        });
-    });
-    document.querySelectorAll(".btn-eliminar-usuario").forEach(boton=>{
-        boton.addEventListener("click",()=>{
-            guardarUsuarios(obtenerUsuarios().filter(usuario=>usuario.id!==boton.dataset.id));
-            inicializarAdmin();
-        });
-    });
-    document.querySelectorAll(".btn-eliminar-reserva").forEach(boton=>{
-        boton.addEventListener("click",()=>{
-            eliminarReserva(boton.dataset.id);
-        });
-    });
-    activarCancelacionReservas();
-    document.querySelectorAll(".btn-aprobar-parqueo").forEach(boton=>{
-        boton.addEventListener("click",()=>{
-            const solicitudesActuales = obtenerSolicitudesParqueo();
-            const aprobada = solicitudesActuales.find(solicitud=>solicitud.id===boton.dataset.id);
-            if(aprobada){
-                const aprobados = leerDatos(DB_KEYS.parqueosAprobados,[]);
-                aprobados.push({
-                    id:obtenerParqueos().length+1,
-                    nombre:aprobada.nombre,
-                    provincia:aprobada.provincia,
-                    zona:aprobada.zona,
-                    ubicacion:`${aprobada.zona}, ${aprobada.provincia}`,
-                    precio:1200,
-                    espacios:10,
-                    calificacion:4.5,
-                    disponible:true,
-                    imagen:"https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=800"
-                });
-                guardarParqueosAprobados(aprobados);
-            }
-            guardarSolicitudesParqueo(solicitudesActuales.filter(solicitud=>solicitud.id!==boton.dataset.id));
-            inicializarAdmin();
-        });
-    });
-    document.querySelectorAll(".btn-rechazar-parqueo").forEach(boton=>{
-        boton.addEventListener("click",()=>{
-            guardarSolicitudesParqueo(obtenerSolicitudesParqueo().filter(solicitud=>solicitud.id!==boton.dataset.id));
-            inicializarAdmin();
-        });
-    });
-}
 
+    const configBackend = await cargarConfigAlertas();
+    const configLocal = leerDatos(DB_KEYS.configAlertas, {zona:'', parqueo:''});
+    const config = configBackend || configLocal;
+
+    if(inputZona) inputZona.value = config.zona || '';
+    if(selectParqueo) selectParqueo.value = config.parqueo || '';
+
+    if(formConfig && !formConfig.dataset.inicializado){
+        formConfig.dataset.inicializado = 'true';
+        formConfig.addEventListener('submit', async (e)=>{
+            e.preventDefault();
+            const nuevo = {
+                zona: inputZona ? inputZona.value.trim() : '',
+                parqueo: selectParqueo ? selectParqueo.value : ''
+            };
+            guardarDatos(DB_KEYS.configAlertas, nuevo);
+            await guardarConfigAlertas(nuevo);
+            if(mensajeConfig){
+                mensajeConfig.classList.remove('d-none');
+            }
+            await inicializarAlertas();
+        });
+    }
+
+    const alertas = await cargarAlertasBackend();
+    if(alertas.length){
+        contenedor.innerHTML = alertas.map(tarjetaAlerta).join('');
+        return;
+    }
+
+    const reservas = obtenerReservas().slice(-2).reverse();
+    const fallback = reservas.map((r, index)=>({
+        id: `local-${index}`,
+        icono: 'bi-check-circle-fill text-success',
+        titulo: 'Reserva Confirmada',
+        tiempo: 'Reciente',
+        mensaje: `Tu reserva en ${r.parqueo || 'Parqueo'} para el ${r.fecha} a las ${r.hora} fue registrada.`
+    }));
+
+    contenedor.innerHTML = fallback.length
+        ? fallback.map(tarjetaAlerta).join('')
+        : '<div class="col-12"><div class="alert alert-info">No hay alertas disponibles por el momento.</div></div>';
+}

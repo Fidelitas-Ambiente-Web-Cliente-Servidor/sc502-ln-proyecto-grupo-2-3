@@ -18,6 +18,10 @@ function obtenerSolicitudesParqueo(){
     ]);
 }
 function obtenerParqueos(){
+    const desdeBackend = leerDatos(DB_KEYS.parqueos,null);
+    if(Array.isArray(desdeBackend) && desdeBackend.length){
+        return desdeBackend;
+    }
     return [...parqueos,...leerDatos(DB_KEYS.parqueosAprobados,[])];
 }
 function guardarParqueosAprobados(parqueosAprobados){

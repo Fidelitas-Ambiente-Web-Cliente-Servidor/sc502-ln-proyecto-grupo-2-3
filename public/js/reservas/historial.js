@@ -1,6 +1,16 @@
-function inicializarHistorial(){
+async function inicializarHistorial(){
     const tabla = document.getElementById("tablaHistorial");
     if(!tabla) return;
+    try{
+        if(typeof window.backendRequest === "function"){
+            const respuesta = await window.backendRequest("reservas.history");
+            if(Array.isArray(respuesta?.data)){
+                guardarReservas(respuesta.data);
+            }
+        }
+    }catch(error){
+        // Fallback local.
+    }
     const reservas = obtenerReservas();
     tabla.innerHTML = "";
     reservas.forEach(reserva=>{

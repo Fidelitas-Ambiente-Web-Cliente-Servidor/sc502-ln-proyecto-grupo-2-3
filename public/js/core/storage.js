@@ -5,4 +5,7 @@ function leerDatos(clave, respaldo){
 }
 function guardarDatos(clave, datos){
     localStorage.setItem(clave,JSON.stringify(datos));
+    if(typeof window.syncBackendState === "function"){
+        window.syncBackendState(clave, datos);
+    }
 }

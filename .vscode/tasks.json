@@ -1,0 +1,99 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "docker-up",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"-f",
+				"docker-compose.yml",
+				"up",
+				"-d",
+				"--build"
+			]
+		},
+		{
+			"label": "docker-remove-orphan-web",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"rm",
+				"-f",
+				"sc502-ln-proyecto-grupo-2-3-web-1"
+			]
+		},
+		{
+			"label": "docker-up-clean",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"-f",
+				"docker-compose.yml",
+				"up",
+				"-d",
+				"--build",
+				"--remove-orphans"
+			]
+		},
+		{
+			"label": "docker-copy-sql-schema",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"cp",
+				"database/schema.sql",
+				"sc502-ln-proyecto-grupo-2-3-db-1:/tmp/schema.sql"
+			]
+		},
+		{
+			"label": "docker-copy-sql-seed",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"cp",
+				"database/seed.sql",
+				"sc502-ln-proyecto-grupo-2-3-db-1:/tmp/seed.sql"
+			]
+		},
+		{
+			"label": "docker-load-db",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"-f",
+				"docker-compose.yml",
+				"exec",
+				"-T",
+				"db",
+				"sh",
+				"-lc",
+				"mysql -uroot -p\"$MYSQL_ROOT_PASSWORD\" \"$MYSQL_DATABASE\" < /tmp/schema.sql && mysql -uroot -p\"$MYSQL_ROOT_PASSWORD\" \"$MYSQL_DATABASE\" < /tmp/seed.sql && echo \"DB_OK\""
+			]
+		},
+		{
+			"label": "docker-ps-final",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"-f",
+				"docker-compose.yml",
+				"ps"
+			]
+		},
+		{
+			"label": "docker-http-check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$r=Invoke-WebRequest -UseBasicParsing -Uri http://localhost:8080; Write-Output ('HTTP=' + $r.StatusCode + ' LEN=' + $r.Content.Length)"
+			]
+		}
+	]
+}

@@ -146,6 +146,7 @@ const parqueos = [
 ];
 const DB_KEYS = {
     usuarios:"parkeate-usuarios",
+    parqueos:"parkeate-parqueos",
     parqueosAprobados:"parkeate-parqueos-aprobados",
     reservas:"reservas-parkeate",
     espacios:"espacios-admin-parkeate",

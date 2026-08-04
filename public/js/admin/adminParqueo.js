@@ -3,14 +3,14 @@ function inicializarAdminParqueo(){
     const form = document.getElementById("formParqueo");
     const filtro = document.getElementById("filtroParqueo");
     if(!tabla) return;
-    let espacios = JSON.parse(localStorage.getItem("espacios-admin-parkeate")) || [
+    let espacios = leerDatos(DB_KEYS.espacios, null) || [
         {zona:"A", espacio:"A-01", estado:"Disponible", placa:"-", tarifa:1500},
         {zona:"A", espacio:"A-02", estado:"Reservado", placa:"ABC-123", tarifa:1500},
         {zona:"B", espacio:"B-01", estado:"Ocupado", placa:"XYZ-789", tarifa:1200},
         {zona:"C", espacio:"C-01", estado:"Mantenimiento", placa:"-", tarifa:1000}
     ];
     function guardarEspacios(){
-        localStorage.setItem("espacios-admin-parkeate",JSON.stringify(espacios));
+        guardarDatos(DB_KEYS.espacios, espacios);
     }
     function renderEspacios(){
         const estado = filtro ? filtro.value : "Todos";

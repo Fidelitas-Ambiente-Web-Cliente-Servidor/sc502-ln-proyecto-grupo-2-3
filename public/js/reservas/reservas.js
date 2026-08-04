@@ -43,6 +43,17 @@ function obtenerReservas(){
 function guardarReservas(reservas){
     guardarDatos(DB_KEYS.reservas,reservas);
 }
+async function cargarReservasBackend(){
+    if(typeof window.backendRequest !== "function") return;
+    try{
+        const respuesta = await window.backendRequest("reservas.list");
+        if(Array.isArray(respuesta?.data)){
+            guardarReservas(respuesta.data);
+        }
+    }catch(error){
+        // Fallback local.
+    }
+}
 function renderReservas(){
     const tabla = document.getElementById("tablaReservas");
     if(!tabla) return;
@@ -53,7 +64,19 @@ function renderReservas(){
     });
     activarCancelacionReservas();
 }
-function cancelarReserva(id){
+async function cancelarReserva(id){
+    try{
+        if(typeof window.backendRequest === "function"){
+            await window.backendRequest("reservas.cancel", {
+                method:"POST",
+                body: JSON.stringify({id})
+            });
+            await cargarReservasBackend();
+        }
+    }catch(error){
+        // Fallback local.
+    }
+
     const reservas = obtenerReservas().map(reserva=>{
         if(reserva.id===id){
             return {
@@ -77,8 +100,8 @@ function eliminarReserva(id){
 }
 function activarCancelacionReservas(){
     document.querySelectorAll(".btn-cancelar-reserva").forEach(boton=>{
-        boton.addEventListener("click",()=>{
-            cancelarReserva(boton.dataset.id);
+        boton.addEventListener("click",async ()=>{
+            await cancelarReserva(boton.dataset.id);
         });
     });
 }
@@ -92,12 +115,13 @@ function cargarParqueosReserva(){
         select.appendChild(option);
     });
 }
-function inicializarReservas(){
+async function inicializarReservas(){
     const formReserva = document.getElementById("formReserva");
     if(!formReserva) return;
+    await cargarReservasBackend();
     cargarParqueosReserva();
     renderReservas();
-    formReserva.addEventListener("submit",(e)=>{
+    formReserva.addEventListener("submit",async (e)=>{
         e.preventDefault();
         const usuario = document.getElementById("nombreReserva").value.trim();
         const placa = document.getElementById("placaReserva").value.trim();
@@ -110,8 +134,7 @@ function inicializarReservas(){
             alert("Debe completar todos los campos.");
             return;
         }
-        const reservas = obtenerReservas();
-        reservas.push({
+        const nuevaReserva = {
             id:generarId("res"),
             usuario,
             placa,
@@ -122,8 +145,25 @@ function inicializarReservas(){
             horaSalida,
             estado:"Activa",
             monto:1500
-        });
-        guardarReservas(reservas);
+        };
+
+        try{
+            if(typeof window.backendRequest === "function"){
+                await window.backendRequest("reservas.create", {
+                    method:"POST",
+                    body: JSON.stringify(nuevaReserva)
+                });
+                await cargarReservasBackend();
+            }else{
+                const reservas = obtenerReservas();
+                reservas.push(nuevaReserva);
+                guardarReservas(reservas);
+            }
+        }catch(error){
+            alert((error && error.message) ? error.message : "No fue posible registrar la reserva.");
+            return;
+        }
+
         renderReservas();
         formReserva.reset();
         alert("Reserva registrada correctamente.");
