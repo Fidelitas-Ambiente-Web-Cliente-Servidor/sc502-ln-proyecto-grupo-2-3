@@ -107,14 +107,6 @@ if ($act === 'update-profile') {
 if ($act === 'bootstrap') {
     $usuario = currentUser($pdo);
 
-    $users = $pdo->query('SELECT id, nombre, correo, telefono, rol, estado FROM usuarios ORDER BY id')->fetchAll();
-    $parkingsRows = $pdo->query('SELECT id, nombre, provincia, zona, ubicacion, precio, espacios, calificacion, disponible, imagen, origen FROM parqueos ORDER BY id')->fetchAll();
-    $parkings = array_map('mapParking', $parkingsRows);
-    $approved = array_values(array_filter($parkings, static fn(array $p): bool => ($p['origen'] ?? 'base') === 'aprobado'));
-
-    $reservasRows = $pdo->query('SELECT id, external_id, usuario, placa, parqueo, espacio, fecha, hora, hora_salida, estado, monto FROM reservas ORDER BY id')->fetchAll();
-    $reservas = array_map('mapReservation', $reservasRows);
-
     $favoritos = [];
     if ($usuario) {
         $favQ = $pdo->prepare('SELECT parqueo_id FROM favoritos WHERE usuario_id=?');
@@ -125,16 +117,6 @@ if ($act === 'bootstrap') {
     response([
         'user' => $usuario,
         'keys' => [
-            'parkeate-usuarios' => $users,
-            'parkeate-parqueos' => array_map(static function (array $p): array {
-                unset($p['origen']);
-                return $p;
-            }, $parkings),
-            'parkeate-parqueos-aprobados' => array_map(static function (array $p): array {
-                unset($p['origen']);
-                return $p;
-            }, $approved),
-            'reservas-parkeate' => $reservas,
             'parkeate-solicitudes-parqueo' => getState($pdo, 'parkeate-solicitudes-parqueo', []),
             'parkeate-resenas' => getState($pdo, 'parkeate-resenas', []),
             'parkeate-incidentes' => getState($pdo, 'parkeate-incidentes', []),

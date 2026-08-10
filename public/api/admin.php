@@ -24,6 +24,61 @@ if ($act === 'user-status') {
     response(['message' => 'Usuario actualizado.']);
 }
 
+if ($act === 'user-save') {
+    $id = (int)($data['id'] ?? 0);
+    $nombre = trim((string)($data['nombre'] ?? ''));
+    $correo = strtolower(trim((string)($data['correo'] ?? '')));
+    $telefono = trim((string)($data['telefono'] ?? ''));
+    $rol = trim((string)($data['rol'] ?? 'Usuario'));
+    $estado = trim((string)($data['estado'] ?? 'Activo'));
+    $password = (string)($data['password'] ?? '');
+
+    if ($nombre === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL) || !in_array($rol, ['Administrador', 'Usuario'], true) || !in_array($estado, ['Activo', 'Inactivo'], true)) {
+        response(['message' => 'Complete correctamente los datos del usuario.'], 422);
+    }
+
+    $exists = $pdo->prepare('SELECT id FROM usuarios WHERE LOWER(correo)=? AND id<>? LIMIT 1');
+    $exists->execute([$correo, $id]);
+    if ($exists->fetch()) {
+        response(['message' => 'El correo ya estÃ¡ registrado.'], 409);
+    }
+
+    if ($id > 0) {
+        if ($password !== '' && strlen($password) < 8) {
+            response(['message' => 'La contraseÃ±a debe tener al menos 8 caracteres.'], 422);
+        }
+        if ($password !== '') {
+            $statement = $pdo->prepare('UPDATE usuarios SET nombre=?, correo=?, telefono=?, rol=?, estado=?, password_hash=? WHERE id=?');
+            $statement->execute([$nombre, $correo, $telefono, $rol, $estado, password_hash($password, PASSWORD_DEFAULT), $id]);
+        } else {
+            $statement = $pdo->prepare('UPDATE usuarios SET nombre=?, correo=?, telefono=?, rol=?, estado=? WHERE id=?');
+            $statement->execute([$nombre, $correo, $telefono, $rol, $estado, $id]);
+        }
+        response(['message' => 'Usuario actualizado.']);
+    }
+
+    if (strlen($password) < 8) {
+        response(['message' => 'Indique una contraseÃ±a de al menos 8 caracteres para el usuario nuevo.'], 422);
+    }
+    $statement = $pdo->prepare('INSERT INTO usuarios (nombre, correo, telefono, password_hash, rol, estado) VALUES (?, ?, ?, ?, ?, ?)');
+    $statement->execute([$nombre, $correo, $telefono, password_hash($password, PASSWORD_DEFAULT), $rol, $estado]);
+    response(['message' => 'Usuario creado.', 'id' => (int)$pdo->lastInsertId()], 201);
+}
+
+if ($act === 'user-delete') {
+    $id = (int)($data['id'] ?? 0);
+    $admin = currentUser($pdo);
+    if ($id <= 0) {
+        response(['message' => 'Usuario invÃ¡lido.'], 422);
+    }
+    if ($admin && $id === (int)$admin['id']) {
+        response(['message' => 'No puede eliminar su propia cuenta administrativa.'], 422);
+    }
+    $statement = $pdo->prepare('DELETE FROM usuarios WHERE id=?');
+    $statement->execute([$id]);
+    response(['message' => 'Usuario eliminado.']);
+}
+
 if ($act === 'reservas') {
     $rows = $pdo->query('SELECT id, external_id, usuario, placa, parqueo, espacio, fecha, hora, hora_salida, estado, monto FROM reservas ORDER BY fecha DESC, hora DESC')->fetchAll();
     response(['data' => array_map('mapReservation', $rows)]);

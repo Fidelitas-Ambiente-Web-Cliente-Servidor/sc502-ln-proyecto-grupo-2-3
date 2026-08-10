@@ -19,7 +19,9 @@ function inicializarLogin(){
                 if(respuesta && respuesta.user){
                     localStorage.setItem("usuario-activo-parkeate", JSON.stringify(respuesta.user));
                     alert("Inicio de sesión exitoso.");
-                    window.location.href = "perfil.html";
+                    window.location.href = String(respuesta.user.rol || "") === "Administrador"
+                        ? "admin.html"
+                        : "perfil.html";
                     return;
                 }
             }
@@ -40,7 +42,9 @@ function inicializarLogin(){
         }
         localStorage.setItem("usuario-activo-parkeate",JSON.stringify(usuario));
         alert("Inicio de sesión exitoso.");
-        window.location.href = "perfil.html";
+        window.location.href = String(usuario.rol || "") === "Administrador"
+            ? "admin.html"
+            : "perfil.html";
     });
 }
 

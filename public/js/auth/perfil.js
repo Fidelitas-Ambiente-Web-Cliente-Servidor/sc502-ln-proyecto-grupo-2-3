@@ -1,98 +1,66 @@
-function inicializarPerfil(){
-    const perfilForm = document.getElementById("perfilForm");
-    if(!perfilForm) return;
-    const inputNombre = document.getElementById("nombrePerfil");
-    const inputCorreo = document.getElementById("correoPerfil");
-    const inputTelefono = document.getElementById("telefonoPerfil");
-    const botonLogout = document.getElementById("btnCerrarSesion");
-
-    const usuarioLocal = (()=>{
-        try{
-            const raw = localStorage.getItem("usuario-activo-parkeate");
-            return raw ? JSON.parse(raw) : null;
-        }catch(error){
-            return null;
-        }
-    })();
-
-    if(usuarioLocal){
-        if(inputNombre) inputNombre.value = usuarioLocal.nombre || "";
-        if(inputCorreo) inputCorreo.value = usuarioLocal.correo || "";
-        if(inputTelefono) inputTelefono.value = usuarioLocal.telefono || "";
-    }
-
-    if(typeof window.backendRequest === "function"){
-        window.backendRequest("auth.session")
-            .then((respuesta)=>{
-                if(respuesta && respuesta.user){
-                    localStorage.setItem("usuario-activo-parkeate", JSON.stringify(respuesta.user));
-                    if(inputNombre) inputNombre.value = respuesta.user.nombre || "";
-                    if(inputCorreo) inputCorreo.value = respuesta.user.correo || "";
-                    if(inputTelefono) inputTelefono.value = respuesta.user.telefono || "";
-                }
-            })
-            .catch(()=>{});
-    }
-
-    if(botonLogout && !botonLogout.dataset.inicializado){
-        botonLogout.dataset.inicializado = "true";
-        botonLogout.addEventListener("click",async ()=>{
-            try{
-                if(typeof window.backendRequest === "function"){
-                    await window.backendRequest("auth.logout", {method:"POST"});
-                }
-            }catch(error){
-                // Modo local.
-            }
-            localStorage.removeItem("usuario-activo-parkeate");
-            window.location.href = "login.html";
-        });
-    }
-
-    perfilForm.addEventListener("submit",async (e)=>{
-        e.preventDefault();
-        const nueva = document.getElementById("nuevaPassword").value;
-        const confirmar = document.getElementById("confirmarNuevaPassword").value;
-        if(nueva || confirmar){
-            if(nueva.length < 8){
-                alert("La nueva contraseña debe tener al menos 8 caracteres.");
-                return;
-            }
-            if(nueva !== confirmar){
-                alert("Las nuevas contraseñas no coinciden.");
-                return;
-            }
-        }
-
-        try{
-            if(typeof window.backendRequest === "function"){
-                const respuesta = await window.backendRequest("auth.update-profile", {
-                    method:"POST",
-                    body: JSON.stringify({
-                        nombre: inputNombre ? inputNombre.value.trim() : "",
-                        correo: inputCorreo ? inputCorreo.value.trim() : "",
-                        telefono: inputTelefono ? inputTelefono.value.trim() : "",
-                        password: nueva || ""
-                    })
-                });
-                if(respuesta && respuesta.user){
-                    localStorage.setItem("usuario-activo-parkeate", JSON.stringify(respuesta.user));
-                }
-            }
-        }catch(error){
-            const mensaje = (error && error.message) ? error.message : "No fue posible actualizar el perfil.";
-            alert(mensaje);
-            return;
-        }
-
-        document
-            .getElementById("mensajePerfil")
-            .classList.remove("d-none");
-        setTimeout(()=>{
-            document
-                .getElementById("mensajePerfil")
-                .classList.add("d-none");
-        },3000);
-    });
+function mostrarUsuarioPerfil(usuario){
+    document.getElementById('nombrePerfil').value = usuario.nombre || '';
+    document.getElementById('correoPerfil').value = usuario.correo || '';
+    document.getElementById('telefonoPerfil').value = usuario.telefono || '';
+    document.getElementById('rolPerfil').value = usuario.rol || 'Usuario';
+    document.getElementById('nombreEncabezadoPerfil').textContent = usuario.nombre || 'Mi perfil';
 }
 
+async function cargarSesionPerfil(){
+    const respuesta = await window.backendRequest('auth.session');
+    if(!respuesta?.user){
+        localStorage.removeItem('usuario-activo-parkeate');
+        window.location.href = 'login.html';
+        return null;
+    }
+    localStorage.setItem('usuario-activo-parkeate', JSON.stringify(respuesta.user));
+    mostrarUsuarioPerfil(respuesta.user);
+    return respuesta.user;
+}
+
+async function inicializarPerfil(){
+    const perfilForm = document.getElementById('perfilForm');
+    if(!perfilForm) return;
+    try{
+        if(!await cargarSesionPerfil()) return;
+    }catch(error){
+        window.location.href = 'login.html';
+        return;
+    }
+
+    document.getElementById('btnCerrarSesion').addEventListener('click', async ()=>{
+        try{ await window.backendRequest('auth.logout', {method:'POST'}); }
+        catch(error){ /* Se limpia la sesión local aun si falla la conexión. */ }
+        localStorage.removeItem('usuario-activo-parkeate');
+        window.location.href = 'login.html';
+    });
+    document.getElementById('recargarPerfil').addEventListener('click',()=>cargarSesionPerfil().catch(()=>{}));
+
+    perfilForm.addEventListener('submit', async event=>{
+        event.preventDefault();
+        const nueva = document.getElementById('nuevaPassword').value;
+        const confirmar = document.getElementById('confirmarNuevaPassword').value;
+        if(nueva || confirmar){
+            if(nueva.length < 8){ alert('La nueva contraseña debe tener al menos 8 caracteres.'); return; }
+            if(nueva !== confirmar){ alert('Las nuevas contraseñas no coinciden.'); return; }
+        }
+        try{
+            const respuesta = await window.backendRequest('auth.update-profile', {
+                method:'POST',
+                body:JSON.stringify({
+                    nombre:document.getElementById('nombrePerfil').value.trim(),
+                    correo:document.getElementById('correoPerfil').value.trim(),
+                    telefono:document.getElementById('telefonoPerfil').value.trim(),
+                    password:nueva || ''
+                })
+            });
+            if(respuesta?.user){
+                localStorage.setItem('usuario-activo-parkeate', JSON.stringify(respuesta.user));
+                mostrarUsuarioPerfil(respuesta.user);
+            }
+            document.getElementById('nuevaPassword').value = '';
+            document.getElementById('confirmarNuevaPassword').value = '';
+            document.getElementById('mensajePerfil').classList.remove('d-none');
+        }catch(error){ alert(error.message || 'No fue posible actualizar el perfil.'); }
+    });
+}

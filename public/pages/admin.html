@@ -1,133 +1,97 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración | Parkéate</title>
+    <title>Administración | Parkeate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
 </head>
-
 <body>
     <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container"><a class="navbar-brand" href="admin.html">Parkéate</a><button class="navbar-toggler"
-                type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"><span
-                    class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="menuPrincipal">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="admin.html">Admin</a></li>
-                    <li class="nav-item"><a class="nav-link" href="adminParqueo.html">Parqueo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="ayuda.html">Ayuda</a></li>
-                </ul>
-            </div>
+        <div class="container"><a class="navbar-brand" href="../index.html">Parkeate</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="menuPrincipal"><ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" href="#gestionUsuarios">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" href="#gestionParqueos">Parqueos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#reservasAdmin">Reservas</a></li>
+                <li class="nav-item ms-lg-3"><button id="btnCerrarSesionAdmin" class="btn btn-parkeate" type="button"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button></li>
+            </ul></div>
         </div>
     </nav>
+
     <section class="hero-buscar">
-        <div class="container">
-            <h1>Panel administrativo</h1>
-            <p>Gestión general de usuarios, espacios y disponibilidad.</p>
+        <div class="container text-center"><span class="badge bg-danger mb-3">Administración</span>
+            <h1>Panel de gestión Parkeate</h1>
+            <p class="lead">Administra usuarios, parqueos y reservas guardados en la base de datos.</p>
         </div>
     </section>
-    <main class="container seccion">
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card-beneficio"><span>Usuarios</span><strong id="totalUsuarios"
-                        class="contador d-block">0</strong></div>
+
+    <main>
+        <section class="container pt-5 pb-0">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3"><div class="card-beneficio"><i class="bi bi-people"></i><span>Usuarios</span><strong id="totalUsuarios" class="contador d-block">0</strong></div></div>
+                <div class="col-md-6 col-lg-3"><div class="card-beneficio"><i class="bi bi-car-front"></i><span>Espacios</span><strong id="totalEspacios" class="contador d-block">0</strong></div></div>
+                <div class="col-md-6 col-lg-3"><div class="card-beneficio"><i class="bi bi-check-circle"></i><span>Disponibles</span><strong id="totalDisponibles" class="contador d-block">0</strong></div></div>
+                <div class="col-md-6 col-lg-3"><div class="card-beneficio"><i class="bi bi-calendar-check"></i><span>Reservas</span><strong id="totalReservasAdmin" class="contador d-block">0</strong></div></div>
             </div>
-            <div class="col-md-4">
-                <div class="card-beneficio"><span>Espacios</span><strong id="totalEspacios"
-                        class="contador d-block">0</strong></div>
+        </section>
+
+        <section id="gestionUsuarios" class="container seccion">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-4"><div class="card h-100"><div class="card-body p-4">
+                    <h2 id="tituloFormularioUsuario">Agregar usuario</h2><p class="text-muted">Crea o actualiza cuentas directamente en MySQL.</p>
+                    <form id="formUsuarioAdmin">
+                        <input type="hidden" id="usuarioId" name="id">
+                        <div class="mb-3"><label class="form-label" for="usuarioNombre">Nombre</label><input id="usuarioNombre" name="nombre" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label" for="usuarioCorreo">Correo</label><input id="usuarioCorreo" name="correo" type="email" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label" for="usuarioTelefono">Teléfono</label><input id="usuarioTelefono" name="telefono" class="form-control"></div>
+                        <div class="row g-3"><div class="col-6"><label class="form-label" for="usuarioRol">Rol</label><select id="usuarioRol" name="rol" class="form-select"><option>Usuario</option><option>Administrador</option></select></div>
+                        <div class="col-6"><label class="form-label" for="usuarioEstado">Estado</label><select id="usuarioEstado" name="estado" class="form-select"><option>Activo</option><option>Inactivo</option></select></div></div>
+                        <div class="my-3"><label class="form-label" for="usuarioPassword">Contraseña</label><input id="usuarioPassword" name="password" type="password" minlength="8" class="form-control" placeholder="Obligatoria al crear"></div>
+                        <div class="d-flex gap-2"><button class="btn btn-parkeate flex-grow-1" type="submit">Guardar usuario</button><button class="btn btn-outline-parkeate" id="limpiarUsuarioAdmin" type="button">Limpiar</button></div>
+                    </form>
+                </div></div></div>
+                <div class="col-lg-8"><div class="card table-responsive"><div class="card-body p-4">
+                    <h2>Usuarios registrados</h2><p class="text-muted">Selecciona un usuario para editar sus datos o eliminarlo.</p>
+                    <table class="table table-hover align-middle"><thead><tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaUsuariosAdmin"></tbody></table>
+                </div></div></div>
             </div>
-            <div class="col-md-4">
-                <div class="card-beneficio"><span>Disponibles</span><strong id="totalDisponibles"
-                        class="contador d-block">0</strong></div>
+        </section>
+
+        <section id="gestionParqueos" class="container seccion pt-0">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-4"><div class="card h-100"><div class="card-body p-4">
+                    <h2 id="tituloFormularioParqueo">Agregar parqueo</h2><p class="text-muted">Los cambios se reflejan en Inicio y Buscar.</p>
+                    <form id="formParqueoAdmin"><input type="hidden" id="parqueoIdAdmin" name="id">
+                        <div class="mb-3"><label class="form-label" for="parqueoNombreAdmin">Nombre</label><input id="parqueoNombreAdmin" name="nombre" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label" for="parqueoProvinciaAdmin">Provincia</label><select id="parqueoProvinciaAdmin" name="provincia" class="form-select"><option>San José</option><option>Alajuela</option><option>Cartago</option><option>Heredia</option><option>Guanacaste</option><option>Puntarenas</option><option>Limón</option></select></div>
+                        <div class="mb-3"><label class="form-label" for="parqueoZonaAdmin">Zona</label><input id="parqueoZonaAdmin" name="zona" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label" for="parqueoUbicacionAdmin">Ubicación</label><input id="parqueoUbicacionAdmin" name="ubicacion" class="form-control" required></div>
+                        <div class="row g-3"><div class="col-6"><label class="form-label" for="parqueoPrecioAdmin">Precio/hora</label><input id="parqueoPrecioAdmin" name="precio" type="number" min="1" class="form-control" required></div><div class="col-6"><label class="form-label" for="parqueoEspaciosAdmin">Espacios</label><input id="parqueoEspaciosAdmin" name="espacios" type="number" min="0" class="form-control" required></div></div>
+                        <div class="my-3"><label class="form-label" for="parqueoImagenAdmin">URL de la foto</label><input id="parqueoImagenAdmin" name="imagen" type="url" class="form-control" placeholder="https://..."></div>
+                        <div class="d-flex gap-2"><button class="btn btn-parkeate flex-grow-1" type="submit">Guardar parqueo</button><button class="btn btn-outline-parkeate" id="limpiarParqueoAdmin" type="button">Limpiar</button></div>
+                    </form>
+                </div></div></div>
+                <div class="col-lg-8"><div class="card table-responsive"><div class="card-body p-4">
+                    <h2>Parqueos de la base de datos</h2><p class="text-muted">Vista horizontal de los parqueos publicados en la plataforma.</p>
+                    <table class="table table-hover align-middle"><thead><tr><th>Foto</th><th>Parqueo</th><th>Ubicación</th><th>Precio</th><th>Espacios</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaParqueosAdmin"></tbody></table>
+                </div></div></div>
             </div>
-            <div class="col-md-4">
-                <div class="card-beneficio"><span>Reservas</span><strong id="totalReservasAdmin"
-                        class="contador d-block">0</strong></div>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-12">
-                <div class="card table-responsive">
-                    <div class="card-body">
-                        <h2>Usuarios registrados</h2>
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Correo</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaUsuariosAdmin"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="card table-responsive">
-                    <div class="card-body">
-                        <h2>Reservas de la plataforma</h2>
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Usuario</th>
-                                    <th>Parqueo</th>
-                                    <th>Espacio</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaReservasAdmin"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="card table-responsive">
-                    <div class="card-body">
-                        <h2>Parqueos pendientes de aprobación</h2>
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Parqueo</th>
-                                    <th>Provincia</th>
-                                    <th>Zona</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaSolicitudesParqueo"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
+
+        <section id="reservasAdmin" class="container seccion pt-0"><div class="card table-responsive"><div class="card-body p-4">
+            <h2>Reservas de la plataforma</h2><p class="text-muted">Consulta y administra las reservas registradas en la base de datos.</p>
+            <table class="table table-hover align-middle"><thead><tr><th>Usuario</th><th>Parqueo</th><th>Espacio</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaReservasAdmin"></tbody></table>
+        </div></div></section>
     </main>
+    <footer><div class="container text-center"><h3>Parkeate</h3><p>Panel administrativo conectado a MySQL.</p></div></footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/core/constants.js"></script>
-    <script src="../js/core/storage.js"></script>
-    <script src="../js/core/utils.js"></script>
-    <script src="../js/parqueos/favoritos.js"></script>
-    <script src="../js/reservas/reservas.js"></script>
-    <script src="../js/reservas/historial.js"></script>
-    <script src="../js/alertas/alertas.js"></script>
     <script src="../js/admin/admin.js"></script>
-    <script src="../js/admin/adminParqueo.js"></script>
-    <script src="../js/home/ayuda.js"></script>
-    <script src="../js/parqueos/detalle.js"></script>
-    <script src="../js/home/index.js"></script>
-    <script src="../js/auth/login.js"></script>
-    <script src="../js/auth/registro.js"></script>
-    <script src="../js/auth/recuperar.js"></script>
-    <script src="../js/auth/perfil.js"></script>
     <script src="../js/core/app.js"></script>
 </body>
-
 </html>

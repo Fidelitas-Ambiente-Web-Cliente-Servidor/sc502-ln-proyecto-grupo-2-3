@@ -7,21 +7,23 @@ $act = action();
 $data = input();
 
 if ($act === 'list' || $act === 'history') {
-    $rows = $pdo->query('SELECT id, external_id, usuario, placa, parqueo, espacio, fecha, hora, hora_salida, estado, monto FROM reservas ORDER BY fecha DESC, hora DESC')->fetchAll();
+    $user = requireUser($pdo);
+    $statement = $pdo->prepare('SELECT id, external_id, usuario, placa, parqueo, espacio, fecha, hora, hora_salida, estado, monto FROM reservas WHERE usuario=? ORDER BY fecha DESC, hora DESC');
+    $statement->execute([(string)$user['nombre']]);
+    $rows = $statement->fetchAll();
     response(['data' => array_map('mapReservation', $rows)]);
 }
 
 if ($act === 'create') {
-    requireUser($pdo);
+    $user = requireUser($pdo);
 
-    $usuario = trim((string)($data['usuario'] ?? ''));
+    $usuario = (string)$user['nombre'];
     $placa = strtoupper(trim((string)($data['placa'] ?? '')));
     $parqueo = trim((string)($data['parqueo'] ?? ''));
     $espacio = trim((string)($data['espacio'] ?? ''));
     $fecha = trim((string)($data['fecha'] ?? ''));
     $hora = trim((string)($data['hora'] ?? ''));
     $horaSalida = trim((string)($data['horaSalida'] ?? ($data['hora_salida'] ?? '')));
-    $monto = (float)($data['monto'] ?? 1500);
     $externalId = trim((string)($data['id'] ?? ''));
 
     if ($usuario === '' || $placa === '' || $parqueo === '' || $espacio === '' || $fecha === '' || $hora === '' || $horaSalida === '') {
@@ -32,12 +34,26 @@ if ($act === 'create') {
         $externalId = 'res-' . time() . '-' . random_int(100, 999);
     }
 
+    $espacioDisponible = $pdo->prepare(
+        'SELECT p.precio
+         FROM espacios e
+         INNER JOIN parqueos p ON p.id = e.parqueo_id
+         WHERE p.nombre=? AND e.codigo=? AND e.estado="Disponible"
+         LIMIT 1'
+    );
+    $espacioDisponible->execute([$parqueo, $espacio]);
+    $espacioReal = $espacioDisponible->fetch();
+    if (!$espacioReal) {
+        response(['message' => 'El espacio seleccionado no existe o no está disponible para este parqueo.'], 422);
+    }
+
     $conflict = $pdo->prepare('SELECT id FROM reservas WHERE parqueo=? AND espacio=? AND fecha=? AND estado IN ("Activa", "Confirmada") LIMIT 1');
     $conflict->execute([$parqueo, $espacio, $fecha]);
     if ($conflict->fetch()) {
         response(['message' => 'Ese espacio ya está reservado para la fecha seleccionada.'], 409);
     }
 
+    $monto = (float)$espacioReal['precio'];
     $insert = $pdo->prepare('INSERT INTO reservas (external_id, usuario, placa, parqueo, espacio, fecha, hora, hora_salida, estado, monto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $insert->execute([$externalId, $usuario, $placa, $parqueo, $espacio, $fecha, $hora, $horaSalida, 'Activa', $monto]);
 
@@ -45,15 +61,15 @@ if ($act === 'create') {
 }
 
 if ($act === 'cancel') {
-    requireUser($pdo);
+    $user = requireUser($pdo);
 
     $id = trim((string)($data['id'] ?? ''));
     if ($id === '') {
         response(['message' => 'Debe indicar la reserva a cancelar.'], 422);
     }
 
-    $update = $pdo->prepare('UPDATE reservas SET estado="Cancelada" WHERE external_id=? OR id=?');
-    $update->execute([$id, (int)$id]);
+    $update = $pdo->prepare('UPDATE reservas SET estado="Cancelada" WHERE (external_id=? OR id=?) AND usuario=?');
+    $update->execute([$id, (int)$id, (string)$user['nombre']]);
 
     response(['message' => 'Reserva cancelada.']);
 }

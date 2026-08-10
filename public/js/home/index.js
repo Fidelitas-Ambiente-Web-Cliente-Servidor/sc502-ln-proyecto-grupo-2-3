@@ -49,11 +49,17 @@ function renderBusqueda(lista){
     activarFavoritos();
     activarBotonesReserva();
 }
-function activarBuscador(){
+async function activarBuscador(){
     const boton=document.getElementById("btnBuscar");
     if(!boton) return;
-    renderBusqueda(obtenerParqueos());
-    boton.addEventListener("click",()=>{
+    let parqueos=[];
+    try{
+        parqueos=await window.cargarParqueosDesdeApi();
+    }catch(error){
+        parqueos=[];
+    }
+    renderBusqueda(parqueos);
+    boton.addEventListener("click",async ()=>{
         const provincia=document
             .getElementById("filtroProvincia")
             .value
@@ -69,7 +75,12 @@ function activarBuscador(){
             .value
             .trim()
             .toLowerCase();
-        const resultados=obtenerParqueos().filter(parqueo=>{
+        try{
+            parqueos=await window.cargarParqueosDesdeApi();
+        }catch(error){
+            parqueos=[];
+        }
+        const resultados=parqueos.filter(parqueo=>{
             const coincideProvincia=
                 provincia==="" ||
                 parqueo.provincia.toLowerCase()===provincia;

@@ -1,51 +1,82 @@
-function renderParqueos(){
-    const contenedor = document.getElementById("contenedor-parqueos");
+async function obtenerParqueosBaseDatos(){
+    try{
+        return await window.cargarParqueosDesdeApi();
+    }catch(error){
+        return [];
+    }
+}
+
+function esFavorito(parqueoId){
+    return Array.isArray(window.favoritosActuales) && window.favoritosActuales.includes(Number(parqueoId));
+}
+
+async function cargarFavoritosBaseDatos(){
+    if(!obtenerUsuarioActivo()){
+        window.favoritosActuales = [];
+        return [];
+    }
+    const respuesta = await window.backendRequest('favorite.list');
+    window.favoritosActuales = Array.isArray(respuesta?.data) ? respuesta.data.map(Number) : [];
+    return window.favoritosActuales;
+}
+
+async function renderParqueos(){
+    const contenedor = document.getElementById('contenedor-parqueos');
     if(!contenedor) return;
-    contenedor.innerHTML = "";
-    obtenerParqueos().forEach(parqueo=>{
-        contenedor.innerHTML += crearTarjetaParqueo(parqueo);
-    });
+    await cargarFavoritosBaseDatos().catch(()=>{});
+    const parqueos = await obtenerParqueosBaseDatos();
+    contenedor.innerHTML = parqueos.map(crearTarjetaParqueo).join('');
     activarFavoritos();
     activarBotonesReserva();
 }
+
 function activarFavoritos(){
-    const favoritos = document.querySelectorAll(".favorito");
-    favoritos.forEach(favorito=>{
-        const id = favorito.dataset.id;
-        if(localStorage.getItem("favorito-"+id)==="true"){
-            favorito.classList.remove("bi-heart","text-secondary");
-            favorito.classList.add("bi-heart-fill","text-danger");
-        }
-        favorito.addEventListener("click",()=>{
-            favorito.classList.toggle("bi-heart");
-            favorito.classList.toggle("bi-heart-fill");
-            favorito.classList.toggle("text-secondary");
-            favorito.classList.toggle("text-danger");
-            const activo = favorito.classList.contains("bi-heart-fill");
-            localStorage.setItem("favorito-"+id,activo);
-            if(typeof window.syncFavorite === "function"){
-                window.syncFavorite(id, activo);
+    document.querySelectorAll('.favorito').forEach(favorito=>{
+        const id = Number(favorito.dataset.id);
+        favorito.classList.toggle('bi-heart-fill', esFavorito(id));
+        favorito.classList.toggle('bi-heart', !esFavorito(id));
+        favorito.classList.toggle('text-danger', esFavorito(id));
+        favorito.classList.toggle('text-secondary', !esFavorito(id));
+        favorito.addEventListener('click', async ()=>{
+            if(!obtenerUsuarioActivo()){
+                alert('Debe iniciar sesión para guardar favoritos.');
+                return;
             }
-            if(document.getElementById("contenedor-favoritos")){
-                inicializarFavoritos();
+            const activo = !esFavorito(id);
+            try{
+                await window.backendRequest('favorite.set', {method:'POST', body:JSON.stringify({parkingId:id, active:activo})});
+                window.favoritosActuales = activo
+                    ? [...(window.favoritosActuales || []), id]
+                    : (window.favoritosActuales || []).filter(favoritoId=>favoritoId!==id);
+                favorito.classList.toggle('bi-heart-fill', activo);
+                favorito.classList.toggle('bi-heart', !activo);
+                favorito.classList.toggle('text-danger', activo);
+                favorito.classList.toggle('text-secondary', !activo);
+                if(document.getElementById('contenedor-favoritos')) inicializarFavoritos();
+            }catch(error){
+                alert(error.message || 'No fue posible actualizar el favorito.');
             }
         });
     });
 }
-function inicializarFavoritos(){
-    const contenedor = document.getElementById("contenedor-favoritos");
+
+async function inicializarFavoritos(){
+    const contenedor = document.getElementById('contenedor-favoritos');
     if(!contenedor) return;
-    const favoritosGuardados = obtenerParqueos().filter(parqueo=>{
-        return localStorage.getItem("favorito-"+parqueo.id)==="true";
-    });
-    contenedor.innerHTML = "";
-    if(favoritosGuardados.length===0){
-        contenedor.innerHTML = `             <div class="col-12">                 <div class="card-beneficio">                     <i class="bi bi-heart"></i>                     <h4>                         No tienes parqueos favoritos todavía.                     </h4>                     <p>                         Marca parqueos como favoritos desde Inicio o Buscar para verlos aquí.                     </p>                     <a href="buscar.html" class="btn btn-parkeate">                         Buscar Parqueos                     </a>                 </div>             </div>         `;
+    if(!obtenerUsuarioActivo()){
+        contenedor.innerHTML = '<div class="col-12 text-center py-5"><h4>Inicie sesión para ver sus favoritos.</h4></div>';
         return;
     }
-    favoritosGuardados.forEach(parqueo=>{
-        contenedor.innerHTML += crearTarjetaParqueo(parqueo);
-    });
-    activarFavoritos();
-    activarBotonesReserva();
+    try{
+        await cargarFavoritosBaseDatos();
+        const parqueos = await obtenerParqueosBaseDatos();
+        const favoritos = parqueos.filter(parqueo=>esFavorito(parqueo.id));
+        contenedor.innerHTML = favoritos.length
+            ? favoritos.map(crearTarjetaParqueo).join('')
+            : '<div class="col-12 text-center py-5"><i class="bi bi-heart display-4 text-muted"></i><h4 class="mt-3">No tienes parqueos favoritos todavía.</h4><a href="buscar.html" class="btn btn-parkeate">Buscar parqueos</a></div>';
+        activarFavoritos();
+        activarBotonesReserva();
+    }catch(error){
+        contenedor.innerHTML = '<div class="col-12 text-center py-5"><p>No fue posible cargar los favoritos.</p></div>';
+    }
 }

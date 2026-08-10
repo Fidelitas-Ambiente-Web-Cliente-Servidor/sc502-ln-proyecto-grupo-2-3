@@ -28,8 +28,10 @@ function resolverRutaApi(action){
         "auth.logout":"auth.php?action=logout",
         "auth.update-profile":"auth.php?action=update-profile",
         "favorite.set":"favoritos.php?action=set",
+        "favorite.list":"favoritos.php?action=list",
         "sync.set":"admin.php?action=state-set",
         "parkings.list":"parqueos.php?action=list",
+        "parkings.spaces":"parqueos.php?action=spaces",
         "reservas.list":"reservas.php?action=list",
         "reservas.history":"reservas.php?action=history",
         "reservas.create":"reservas.php?action=create",
@@ -39,6 +41,8 @@ function resolverRutaApi(action){
         "alertas.mark-read":"alertas.php?action=mark-read",
         "admin.dashboard":"admin.php?action=dashboard",
         "admin.users":"admin.php?action=users",
+        "admin.user-save":"admin.php?action=user-save",
+        "admin.user-delete":"admin.php?action=user-delete",
         "admin.user-status":"admin.php?action=user-status",
         "admin.reservas":"admin.php?action=reservas",
         "admin.reserva-cancel":"admin.php?action=reserva-cancel",
@@ -56,17 +60,19 @@ function resolverRutaApi(action){
 window.backendRequest = async function backendRequest(action, opciones={}){
     const ruta = resolverRutaApi(action);
     const bases = [baseApi(), "api/", "../api/", "public/api/", "../public/api/"];
+    const {query, ...opcionesFetch} = opciones;
+    const sufijoQuery = query ? `&${new URLSearchParams(query).toString()}` : "";
     let respuesta = null;
 
     for(const base of Array.from(new Set(bases))){
         try{
-            const tentativa = await fetch(base + ruta, {
+            const tentativa = await fetch(base + ruta + sufijoQuery, {
                 credentials: "same-origin",
                 headers: {
                     "Content-Type":"application/json",
                     ...(opciones.headers || {})
                 },
-                ...opciones
+                ...opcionesFetch
             });
             if(tentativa.status !== 404){
                 respuesta = tentativa;
@@ -96,6 +102,16 @@ window.backendRequest = async function backendRequest(action, opciones={}){
         throw new Error((contenido && contenido.message) || "No fue posible completar la solicitud.");
     }
     return contenido;
+};
+
+window.cargarParqueosDesdeApi = async function cargarParqueosDesdeApi(){
+    const respuesta = await window.backendRequest("parkings.list");
+    return Array.isArray(respuesta?.data) ? respuesta.data : [];
+};
+
+window.cargarEspaciosDesdeApi = async function cargarEspaciosDesdeApi(parkingId, fecha){
+    const respuesta = await window.backendRequest("parkings.spaces", {query:{parkingId, fecha}});
+    return Array.isArray(respuesta?.data) ? respuesta.data : [];
 };
 
 window.syncBackendState = function syncBackendState(key, data){
@@ -150,6 +166,12 @@ function actualizarAccesoAdmin(usuario){
     const esAdmin = rol === "administrador";
     const enPages = window.location.pathname.includes("/pages/");
     const rutaAdmin = enPages ? "admin.html" : "pages/admin.html";
+    const rutaActual = window.location.pathname.toLowerCase();
+
+    if(esAdmin && !rutaActual.endsWith("/admin.html")){
+        window.location.href = rutaAdmin;
+        return;
+    }
 
     document.querySelectorAll("nav .navbar-nav, nav ul").forEach((lista)=>{
         const enlaces = Array.from(lista.querySelectorAll("a"));
@@ -173,6 +195,21 @@ function actualizarAccesoAdmin(usuario){
     });
 }
 
+function activarCierreSesionAdmin(){
+    const boton = document.getElementById("btnCerrarSesionAdmin");
+    if(!boton || boton.dataset.inicializado) return;
+    boton.dataset.inicializado = "true";
+    boton.addEventListener("click", async ()=>{
+        try{
+            await window.backendRequest("auth.logout", {method:"POST"});
+        }catch(error){
+            // La limpieza local permite salir incluso si el servidor no responde.
+        }
+        localStorage.removeItem("usuario-activo-parkeate");
+        window.location.href = "login.html";
+    });
+}
+
 async function hidratarDesdeBackend(){
     if(typeof window.backendRequest !== "function") return;
     try{
@@ -190,10 +227,12 @@ async function hidratarDesdeBackend(){
         });
 
         if(Array.isArray(respuesta?.favoritos)){
+            window.favoritosActuales = respuesta.favoritos.map(Number);
             respuesta.favoritos.forEach((id)=>{
                 localStorage.setItem(`favorito-${id}`, "true");
             });
         }
+        if(!Array.isArray(respuesta?.favoritos)) window.favoritosActuales = [];
 
         if(respuesta?.user){
             localStorage.setItem("usuario-activo-parkeate", JSON.stringify(respuesta.user));
@@ -215,9 +254,9 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         "renderParqueos", "animarContadores", "efectoNavbar", "activarBuscador",
         "activarBusquedaRapida", "inicializarLogin", "inicializarRegistro",
         "inicializarRecuperacion", "inicializarPerfil", "formatoTelefono",
-        "inicializarFavoritos", "inicializarReservas", "inicializarHistorial",
+        "inicializarFavoritos", "inicializarReservas", "inicializarReservar", "inicializarHistorial",
         "inicializarAlertas", "inicializarAdmin", "inicializarAdminParqueo",
-        "inicializarAyuda", "inicializarDetalleParqueo"
+        "inicializarAyuda", "inicializarDetalleParqueo", "activarCierreSesionAdmin"
     ].forEach(nombre=>{
         if(typeof window[nombre] === "function") window[nombre]();
     });

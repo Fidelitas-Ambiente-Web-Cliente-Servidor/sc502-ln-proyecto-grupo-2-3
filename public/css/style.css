@@ -455,6 +455,18 @@ p {
     vertical-align: middle
 }
 
+.admin-parking-image {
+    width: 82px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 10px
+}
+
+.tarjeta-reserva-realizada { overflow: hidden }
+.tarjeta-reserva-realizada > img { height: 200px; width: 100%; object-fit: cover }
+.reserva-detalle { display: grid; gap: 8px; color: var(--color-texto-suave) }
+.reserva-detalle i { color: var(--color-primario); margin-right: 6px }
+
 .card {
     border: none;
     border-radius: 20px;
