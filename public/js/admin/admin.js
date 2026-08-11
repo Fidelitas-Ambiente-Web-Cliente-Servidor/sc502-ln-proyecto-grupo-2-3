@@ -22,6 +22,7 @@ async function cargarAdminBackend(){
 function actualizarCardsAdmin(dashboard){
     const valores = {
         totalUsuarios: dashboard.usuarios || 0,
+        totalParqueos: dashboard.parqueos || 0,
         totalEspacios: dashboard.espacios || 0,
         totalDisponibles: dashboard.disponibles || 0,
         totalReservasAdmin: dashboard.reservas || 0
@@ -64,6 +65,29 @@ function renderParqueosAdmin(parqueos){
         </tr>`).join('') || '<tr><td colspan="7" class="text-center">No hay parqueos registrados.</td></tr>';
 }
 
+function renderTarjetasParqueosAdmin(parqueos){
+    const contenedor = document.getElementById('tarjetasParqueosAdmin');
+    if(!contenedor) return;
+    contenedor.innerHTML = parqueos.map(parqueo=>`
+        <article class="col-md-6 col-xl-4">
+            <div class="card h-100">
+                <img class="admin-parking-image" src="${parqueo.imagen || ''}" alt="${parqueo.nombre}">
+                <div class="card-body">
+                    <h3 class="h5 mb-1">${parqueo.nombre}</h3>
+                    <p class="text-muted mb-2">${parqueo.ubicacion}</p>
+                    <p class="mb-1"><strong>Provincia:</strong> ${parqueo.provincia}</p>
+                    <p class="mb-1"><strong>Zona:</strong> ${parqueo.zona}</p>
+                    <p class="mb-1"><strong>Precio:</strong> ₡${Number(parqueo.precio).toLocaleString('es-CR')}/h</p>
+                    <p class="mb-0"><strong>Espacios:</strong> ${parqueo.espacios} · ${parqueo.disponible ? 'Disponible' : 'Completo'}</p>
+                </div>
+            </div>
+        </article>`).join('');
+
+    if(!parqueos.length){
+        contenedor.innerHTML = '<div class="col-12"><div class="alert alert-light border">No hay parqueos registrados en la base de datos.</div></div>';
+    }
+}
+
 function renderReservasAdmin(reservas){
     const tabla = document.getElementById('tablaReservasAdmin');
     if(!tabla) return;
@@ -102,22 +126,34 @@ function escucharAccionesAdmin(data){
         document.getElementById('gestionUsuarios').scrollIntoView({behavior:'smooth'});
     }));
     document.querySelectorAll('.btn-eliminar-usuario').forEach(btn=>btn.addEventListener('click',async ()=>{
-        if(!confirm(`¿Eliminar a ${btn.dataset.nombre}? Esta acción no se puede deshacer.`)) return;
-        await window.backendRequest('admin.user-delete',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
-        await inicializarAdmin();
+        try{
+            if(!confirm(`¿Eliminar a ${btn.dataset.nombre}? Esta acción no se puede deshacer.`)) return;
+            await window.backendRequest('admin.user-delete',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
+            await inicializarAdmin();
+        }catch(error){
+            alert(error.message || 'No fue posible eliminar el usuario.');
+        }
     }));
     document.querySelectorAll('.btn-editar-parqueo').forEach(btn=>btn.addEventListener('click',()=>{
         llenarFormularioParqueo(data.parqueos.find(parqueo=>String(parqueo.id)===btn.dataset.id));
         document.getElementById('gestionParqueos').scrollIntoView({behavior:'smooth'});
     }));
     document.querySelectorAll('.btn-eliminar-parqueo').forEach(btn=>btn.addEventListener('click',async ()=>{
-        if(!confirm(`¿Eliminar ${btn.dataset.nombre}?`)) return;
-        await window.backendRequest('admin.parking-delete',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
-        await inicializarAdmin();
+        try{
+            if(!confirm(`¿Eliminar ${btn.dataset.nombre}?`)) return;
+            await window.backendRequest('admin.parking-delete',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
+            await inicializarAdmin();
+        }catch(error){
+            alert(error.message || 'No fue posible eliminar el parqueo.');
+        }
     }));
     document.querySelectorAll('.btn-cancelar-admin').forEach(btn=>btn.addEventListener('click',async ()=>{
-        await window.backendRequest('admin.reserva-cancel',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
-        await inicializarAdmin();
+        try{
+            await window.backendRequest('admin.reserva-cancel',{method:'POST',body:JSON.stringify({id:btn.dataset.id})});
+            await inicializarAdmin();
+        }catch(error){
+            alert(error.message || 'No fue posible cancelar la reserva.');
+        }
     }));
 }
 
@@ -128,10 +164,15 @@ function activarFormulariosAdmin(){
         formUsuario.dataset.ready = 'true';
         formUsuario.addEventListener('submit',async event=>{
             event.preventDefault();
-            const payload = Object.fromEntries(new FormData(formUsuario).entries());
-            await window.backendRequest('admin.user-save',{method:'POST',body:JSON.stringify(payload)});
-            llenarFormularioUsuario(null);
-            await inicializarAdmin();
+            try{
+                const payload = Object.fromEntries(new FormData(formUsuario).entries());
+                await window.backendRequest('admin.user-save',{method:'POST',body:JSON.stringify(payload)});
+                llenarFormularioUsuario(null);
+                await inicializarAdmin();
+                alert('Usuario guardado correctamente.');
+            }catch(error){
+                alert(error.message || 'No fue posible guardar el usuario.');
+            }
         });
         document.getElementById('limpiarUsuarioAdmin').addEventListener('click',()=>llenarFormularioUsuario(null));
     }
@@ -139,10 +180,15 @@ function activarFormulariosAdmin(){
         formParqueo.dataset.ready = 'true';
         formParqueo.addEventListener('submit',async event=>{
             event.preventDefault();
-            const payload = Object.fromEntries(new FormData(formParqueo).entries());
-            await window.backendRequest('admin.parking-save',{method:'POST',body:JSON.stringify(payload)});
-            llenarFormularioParqueo(null);
-            await inicializarAdmin();
+            try{
+                const payload = Object.fromEntries(new FormData(formParqueo).entries());
+                await window.backendRequest('admin.parking-save',{method:'POST',body:JSON.stringify(payload)});
+                llenarFormularioParqueo(null);
+                await inicializarAdmin();
+                alert('Parqueo guardado correctamente.');
+            }catch(error){
+                alert(error.message || 'No fue posible guardar el parqueo.');
+            }
         });
         document.getElementById('limpiarParqueoAdmin').addEventListener('click',()=>llenarFormularioParqueo(null));
     }
@@ -160,6 +206,7 @@ async function inicializarAdmin(){
         const data = await cargarAdminBackend();
         actualizarCardsAdmin(data.dashboard);
         renderUsuariosAdmin(data.users);
+        renderTarjetasParqueosAdmin(data.parqueos);
         renderParqueosAdmin(data.parqueos);
         renderReservasAdmin(data.reservas);
         escucharAccionesAdmin(data);

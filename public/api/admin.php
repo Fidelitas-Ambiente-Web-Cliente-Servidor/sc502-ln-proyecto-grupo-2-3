@@ -187,6 +187,7 @@ if ($act === 'request-approve' || $act === 'request-reject') {
 
 if ($act === 'dashboard') {
     $totUsuarios = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
+    $totParqueos = (int)$pdo->query('SELECT COUNT(*) FROM parqueos')->fetchColumn();
     $totEspacios = (int)$pdo->query('SELECT COALESCE(SUM(espacios),0) FROM parqueos')->fetchColumn();
     $totDisponibles = (int)$pdo->query('SELECT COALESCE(SUM(espacios),0) FROM parqueos WHERE disponible=1')->fetchColumn();
     $totReservas = (int)$pdo->query('SELECT COUNT(*) FROM reservas')->fetchColumn();
@@ -194,6 +195,7 @@ if ($act === 'dashboard') {
     response([
         'data' => [
             'usuarios' => $totUsuarios,
+            'parqueos' => $totParqueos,
             'espacios' => $totEspacios,
             'disponibles' => $totDisponibles,
             'reservas' => $totReservas,
