@@ -3,7 +3,7 @@ services:
     build:
       context: ./docker/php
     ports:
-      - "${APP_PORT:-8080}:80"
+      - "${APP_PORT:-8081}:80"
     volumes:
       - ./:/var/www/html
       - parkeate_uploads:/var/www/html/uploads

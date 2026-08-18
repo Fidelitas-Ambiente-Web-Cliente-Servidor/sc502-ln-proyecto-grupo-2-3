@@ -11,17 +11,23 @@ function generarEstrellas(calificacion){
     return estrellas;
 }
 function generarBadge(disponible){ return disponible ? '<span class="badge bg-success">Disponible</span>' : '<span class="badge bg-danger">Completo</span>'; }
-function crearTarjetaParqueo(parqueo){
+function crearTarjetaCard(parqueo){
     const enPages = window.location.pathname.includes('/pages/');
     const rutaDetalle = enPages ? `detalle.html?parqueo=${parqueo.id}` : `pages/detalle.html?parqueo=${parqueo.id}`;
-    return `<div class="col-lg-3 col-md-6 mb-4"><div class="card tarjeta-parqueo h-100">
+    return `<div class="card tarjeta-parqueo h-100">
         <img src="${parqueo.imagen}" class="card-img-top" alt="${parqueo.nombre}">
         <div class="card-body"><div class="d-flex justify-content-between align-items-center mb-2">${generarBadge(parqueo.disponible)}<i class="bi bi-heart favorito fs-4 text-secondary" data-id="${parqueo.id}"></i></div>
         <h5 class="fw-bold">${parqueo.nombre}</h5><p class="text-muted"><i class="bi bi-geo-alt-fill"></i> ${parqueo.ubicacion}</p>
         <div class="mb-2">${generarEstrellas(parqueo.calificacion)}<span class="ms-2">${parqueo.calificacion}</span></div>
         <p>🚗 ${parqueo.espacios} espacios disponibles</p><h4 class="precio">₡${parqueo.precio}/hora</h4></div>
         <div class="card-footer bg-white border-0 d-flex gap-2"><a href="${rutaDetalle}" class="btn btn-outline-parkeate flex-grow-1">Detalles</a><button data-parqueo-id="${parqueo.id}" class="btn btn-parkeate btn-reservar flex-grow-1"><i class="bi bi-calendar-check"></i> Reservar</button></div>
-    </div></div>`;
+    </div>`;
+}
+function crearTarjetaParqueo(parqueo){
+    return `<div class="col-lg-3 col-md-6 mb-4">${crearTarjetaCard(parqueo)}</div>`;
+}
+function crearTarjetaParqueoCarousel(parqueo){
+    return `<div class="carousel-slide">${crearTarjetaCard(parqueo)}</div>`;
 }
 function activarBotonesReserva(){
     document.querySelectorAll('.btn-reservar').forEach(boton=>boton.addEventListener('click',()=>{

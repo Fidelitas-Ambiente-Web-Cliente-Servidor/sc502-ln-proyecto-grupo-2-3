@@ -1,5 +1,6 @@
 INSERT INTO usuarios (nombre, correo, telefono, password_hash, rol, estado) VALUES
 ('Santiago Mora', 'santiago@parkeate.com', '8888-8888', 'Parqueate2026!', 'Administrador', 'Activo'),
+('Wichical', 'wichical@parkeate.com', '8888-8888', 'Test123', 'Administrador', 'Activo'),
 ('María González', 'maria@email.com', '8888-1111', 'Parqueate2026!', 'Usuario', 'Activo'),
 ('Daniel Vargas', 'daniel@email.com', '8888-2222', 'Parqueate2026!', 'Usuario', 'Activo')
 ON DUPLICATE KEY UPDATE

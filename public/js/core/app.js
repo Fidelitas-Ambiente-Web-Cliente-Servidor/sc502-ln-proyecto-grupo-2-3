@@ -195,6 +195,43 @@ function actualizarAccesoAdmin(usuario){
     });
 }
 
+function actualizarBotonCerrarSesionNavbar(usuario){
+    const usuarioActual = usuario ?? obtenerUsuarioActivo();
+    const listaNav = document.querySelectorAll("nav .navbar-nav, nav ul");
+    const enPages = window.location.pathname.includes("/pages/");
+
+    listaNav.forEach((lista)=>{
+        let logoutItem = lista.querySelector('#navCerrarSesionItem');
+        if(usuarioActual){
+            if(!logoutItem){
+                logoutItem = document.createElement("li");
+                logoutItem.className = "nav-item ms-lg-3";
+                logoutItem.id = "navCerrarSesionItem";
+                logoutItem.innerHTML = `<button id="btnNavbarCerrarSesion" class="btn btn-outline-danger">Cerrar sesión</button>`;
+                lista.appendChild(logoutItem);
+            }
+        } else if(logoutItem){
+            logoutItem.remove();
+        }
+    });
+}
+
+function activarCierreSesionNavbar(){
+    const boton = document.getElementById("btnNavbarCerrarSesion");
+    if(!boton || boton.dataset.inicializado) return;
+    boton.dataset.inicializado = "true";
+    boton.addEventListener("click", async ()=>{
+        try{
+            await window.backendRequest("auth.logout", {method:"POST"});
+        }catch(error){
+            // La limpieza local permite salir incluso si el servidor no responde.
+        }
+        localStorage.removeItem("usuario-activo-parkeate");
+        const rutaLogin = window.location.pathname.includes("/pages/") ? "login.html" : "pages/login.html";
+        window.location.href = rutaLogin;
+    });
+}
+
 function activarCierreSesionAdmin(){
     const boton = document.getElementById("btnCerrarSesionAdmin");
     if(!boton || boton.dataset.inicializado) return;
@@ -249,14 +286,15 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     const usuario = await hidratarDesdeBackend();
     actualizarBotonSesionNavbar(usuario);
     actualizarAccesoAdmin(usuario);
+    actualizarBotonCerrarSesionNavbar(usuario);
 
     [
         "renderParqueos", "animarContadores", "efectoNavbar", "activarBuscador",
-        "activarBusquedaRapida", "inicializarLogin", "inicializarRegistro",
+        "activarBusquedaRapida", "activarParqueosInicio", "inicializarLogin", "inicializarRegistro",
         "inicializarRecuperacion", "inicializarPerfil", "formatoTelefono",
         "inicializarFavoritos", "inicializarReservas", "inicializarReservar", "inicializarHistorial",
         "inicializarAlertas", "inicializarAdmin", "inicializarAdminParqueo",
-        "inicializarAyuda", "inicializarDetalleParqueo", "activarCierreSesionAdmin"
+        "inicializarAyuda", "inicializarDetalleParqueo", "activarCierreSesionAdmin", "activarCierreSesionNavbar"
     ].forEach(nombre=>{
         if(typeof window[nombre] === "function") window[nombre]();
     });

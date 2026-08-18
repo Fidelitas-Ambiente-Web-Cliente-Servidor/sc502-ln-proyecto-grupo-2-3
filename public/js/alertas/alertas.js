@@ -1,16 +1,18 @@
 function tarjetaAlerta(alerta){
     return `
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi ${alerta.icono || 'bi-bell-fill text-warning'} fs-1 me-3"></i>
+        <div class="col">
+            <div class="card alert-card h-100">
+                <div class="card-body d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="alert-card-icon bg-light rounded-circle d-inline-flex align-items-center justify-content-center">
+                            <i class="bi ${alerta.icono || 'bi-bell-fill text-warning'} fs-3"></i>
+                        </div>
                         <div>
-                            <h4 class="mb-1">${alerta.titulo || 'Notificación'}</h4>
+                            <h5 class="mb-1">${alerta.titulo || 'Notificación'}</h5>
                             <small class="text-muted">${alerta.tiempo || 'Reciente'}</small>
                         </div>
                     </div>
-                    <p>${alerta.mensaje || ''}</p>
+                    <p class="mb-0 text-muted">${alerta.mensaje || ''}</p>
                 </div>
             </div>
         </div>

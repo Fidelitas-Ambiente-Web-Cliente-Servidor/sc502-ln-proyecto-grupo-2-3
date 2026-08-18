@@ -330,6 +330,85 @@ p {
     transition: .4s
 }
 
+.parqueo-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.parqueo-carousel .carousel-viewport {
+    overflow: hidden;
+    width: 100%;
+}
+
+.parqueo-carousel .carousel-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.4s ease;
+    padding-bottom: 8px;
+}
+
+.parqueo-carousel .carousel-slide {
+    min-width: calc((100% - 72px) / 4);
+    max-width: calc((100% - 72px) / 4);
+    flex: 0 0 auto;
+}
+
+.parqueo-carousel .carousel-slide .tarjeta-parqueo {
+    height: 100%;
+}
+
+.parqueo-carousel .carousel-control {
+    border: none;
+    background: rgba(255,255,255,0.9);
+    color: var(--color-primario);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: var(--sombra);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.parqueo-carousel .carousel-control:hover {
+    background: white;
+}
+
+.parqueo-carousel .carousel-control:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1199px) {
+    .parqueo-carousel .carousel-slide {
+        min-width: calc((100% - 48px) / 3);
+        max-width: calc((100% - 48px) / 3);
+    }
+}
+
+@media (max-width: 991px) {
+    .parqueo-carousel .carousel-slide {
+        min-width: calc((100% - 24px) / 2);
+        max-width: calc((100% - 24px) / 2);
+    }
+}
+
+@media (max-width: 767px) {
+    .parqueo-carousel {
+        gap: 8px;
+    }
+    .parqueo-carousel .carousel-slide {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    .parqueo-carousel .carousel-control {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 .tarjeta-parqueo:hover img {
     transform: scale(1.08)
 }
@@ -369,6 +448,42 @@ p {
     color: var(--color-primario);
     font-size: 1.4rem;
     font-weight: 700
+}
+
+.alert-card {
+    border: none;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 15px 30px rgba(0,0,0,.05);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.alert-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,.08);
+}
+
+.alert-card-icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+}
+
+.alert-card .card-body {
+    padding: 24px;
+}
+
+.alert-card h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.alert-card p {
+    line-height: 1.6;
+}
+
+.alert-card .text-muted {
+    color: #6c757d;
 }
 
 .badge {
@@ -616,6 +731,10 @@ footer p {
     color: var(--color-texto-claro)
 }
 
+.texto-footer-blanco {
+    color: var(--color-blanco) !important
+}
+
 footer ul {
     padding-left: 0
 }
@@ -746,5 +865,76 @@ footer hr {
 
     .card {
         margin-bottom: 20px
+    }
+}
+
+/* Ajustes visuales exclusivos de administración */
+.admin-page .hero-buscar {
+    padding: 56px 0;
+}
+
+.admin-page .hero-buscar h1 {
+    margin-bottom: 12px;
+}
+
+.admin-page .card-beneficio {
+    padding: 24px 18px;
+}
+
+.admin-page .card-beneficio i {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.admin-page .card-beneficio .contador {
+    margin-top: 6px;
+}
+
+.admin-page .card-body > h2 {
+    font-size: 1.45rem;
+}
+
+#tarjetasParqueosAdmin > article .card {
+    overflow: hidden;
+}
+
+#tarjetasParqueosAdmin .admin-parking-image {
+    width: 100%;
+    height: 170px;
+    border-radius: 0;
+    object-fit: cover;
+}
+
+.admin-page table {
+    min-width: 720px;
+}
+
+.admin-parking-page #panelGestionEspacios .card-beneficio {
+    min-height: 135px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.admin-parking-page .filtro-parqueo {
+    max-width: 220px;
+}
+
+@media(max-width: 767px) {
+    .admin-page .hero-buscar {
+        padding: 40px 0;
+    }
+
+    .admin-page .hero-buscar h1 {
+        font-size: 2rem;
+    }
+
+    .admin-page .seccion {
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
+
+    #tarjetasParqueosAdmin .admin-parking-image {
+        height: 200px;
     }
 }
